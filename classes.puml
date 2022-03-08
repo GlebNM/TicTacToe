@@ -1,0 +1,51 @@
+@startuml
+
+abstract Agent {
+    {abstract} +void init(State)
+    {abstract} +Move choseBestMove(timeLimit)
+    {abstract} +void performMove(Move)
+    {abstract} +void resetGame()
+    {abstract} +void setState(GameState)
+    {abstract} +setAllPossiblesMoves()
+}
+
+class MCTSAgent {
+    -GameState state
+}
+
+class MiniMaxAgent {
+    -GameState state
+}
+
+abstract Heuristics {
+
+}
+
+class Heuristic1 {
+
+}
+
+class Heuristic2 {
+
+}
+
+class GameState {
+    
+}
+
+class RandomAgent {
+    
+}
+
+MiniMaxAgent --o GameState
+MCTSAgent --o GameState
+MiniMaxAgent --* Heuristics
+
+class MCTSAgent implements Agent
+class MiniMaxAgent implements Agent
+class RandomAgent implements Agent
+
+class Heuristic1 implements Heuristics
+class Heuristic2 implements Heuristics
+
+@enduml
