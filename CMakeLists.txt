@@ -16,3 +16,14 @@ include_directories(include)
 add_subdirectory(src)
 
 target_link_libraries(main lib)
+
+find_package(GTest REQUIRED CONFIG)
+
+#include_directories("/usr/local/include/")
+set(TestSources tests/main_test.cpp tests/board_tests.cpp)
+
+add_executable(CTest ${TestSources})
+target_link_libraries(CTest PUBLIC lib GTest::gtest GTest::gtest_main)
+target_link_libraries(CTest PUBLIC GTest::gmock GTest::gmock_main)
+include(GoogleTest)
+gtest_discover_tests(CTest)
