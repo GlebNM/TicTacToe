@@ -1,24 +1,55 @@
 @startuml classes
 
-abstract Agent {
+abstract Bot {
     {abstract} +void init(State)
     {abstract} +Move choseBestMove(timeLimit)
     {abstract} +void performMove(Move)
     {abstract} +void resetGame()
-    {abstract} +void setState(GameState)
+    {abstract} +void setState(State)
     {abstract} +setAllPossiblesMoves()
 }
 
+enum BoardStatus {
+    + XWin
+    + OWin
+    + Draw
+    + InProgress
+}
+
+enum PlayerSymbol {
+    + Empty
+    + XMark
+    + OMark
+}
+
+class Position {
+    + int x
+    + int y
+}
+
+class Agent {
+    PlayerSymbol me
+}
+
+Agent --o PlayerSymbol
+
+class HumanPlayer {
+
+}
+
+class HumanPlayer implements Agent
+class Bot implements Agent
+
 class MCTSAgent {
-    -GameState state
+    -State state
 }
 
 class MiniMaxAgent {
-    -GameState state
+    -State state
 }
 
 abstract Heuristics {
-
+    
 }
 
 class Heuristic1 {
@@ -29,21 +60,36 @@ class Heuristic2 {
 
 }
 
-class GameState {
-    
+class State {
+    - __uint128 smallFieldX
+    - __uint128 smallFieldO
+    - __uint16 bigFieldX
+    - __uint16 bigFieldO
+    + PlayerSymbol currentPlayer
+    + Position lastPosition
+    + void PerformMove(Position)
+    + BoardStatus checkOverallStatus()
+    + bool checkOverallStatus(PlayerSymbol)
+    + BoardStatus checkSmallFieldStatus(Position)
+    + bool checkSmallFieldStatus(Position, PlayerSymbol)
+    + vector<Position> getAvailableMoves()
+    + void reset()
 }
 
+State --o PlayerSymbol
+State --o Position
+State --o BoardStatus
 class RandomAgent {
     
 }
 
-MiniMaxAgent --o GameState
-MCTSAgent --o GameState
+MiniMaxAgent --o State
+MCTSAgent --o State
 MiniMaxAgent --* Heuristics
 
-class MCTSAgent implements Agent
-class MiniMaxAgent implements Agent
-class RandomAgent implements Agent
+class MCTSAgent implements Bot
+class MiniMaxAgent implements Bot
+class RandomAgent implements Bot
 
 class Heuristic1 implements Heuristics
 class Heuristic2 implements Heuristics
