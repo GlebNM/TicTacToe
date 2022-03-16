@@ -1,5 +1,5 @@
-#include "../include/NewState.h"
-#include "../include/NewOther.h"
+#include "NewState.h"
+#include "NewOther.h"
 
 int State::getSmallCellPosition(Position position) {
     return position.x * 9 + position.y;
@@ -143,8 +143,4 @@ std::vector<Position> State::getAvailableMoves() const {
         }
     }
     return positions;
-}
-
-int main() {
-    
 }
