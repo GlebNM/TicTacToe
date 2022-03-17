@@ -1,16 +1,16 @@
 #include "State.h"
 #include "Other.h"
 
-void State::setBoard(const Board &newBoard) {
+void State::setBoard(const Board& newBoard) {
     State::board = newBoard;
 }
 
-std::vector<State *> State::getAllPossibleStates() const {
-    std::vector<State *> res;
+std::vector<State*> State::getAllPossibleStates() const {
+    std::vector<State*> res;
     std::vector<Position> possibleMoves;
     getBoard().getAvailableMoves(possibleMoves);
-    for (Position move:possibleMoves) {
-        State *newState = new State;
+    for (Position move: possibleMoves) {
+        State* newState = new State;
         Board newBoard = this->getBoard();
         newBoard.performMove(playerNo, move);
         newState->board = newBoard;
@@ -23,7 +23,7 @@ std::vector<State *> State::getAllPossibleStates() const {
 }
 
 void State::randomPlay() {             //makes a random move
-    std::vector<Position>moves;
+    std::vector<Position> moves;
     this->board.getAvailableMoves(moves);
     int numberOfValidMoves = static_cast<int>(moves.size());
     int pos = rand() % numberOfValidMoves;

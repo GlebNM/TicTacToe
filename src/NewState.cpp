@@ -1,9 +1,12 @@
 #include "NewState.h"
 #include "NewOther.h"
+#include "cassert"
+#include <iostream>
+
 int State::getSmallCellPosition(Position position) {
     return position.x * 9 + position.y;
 }
-    
+
 int State::getBigCellPosition(Position position) {
     return position.x / 3 * 3 + position.y / 3;
 }
@@ -117,7 +120,7 @@ BoardStatus State::checkBigCellStatus(Position position) const {
     for (int i = -1; i <= 1; ++i) {
         for (int j = -1; j <= 1; ++j) {
             int movedPosition = getSmallCellPosition(BigCellCenter.getMoved(i, j));
-            countCells += smallCellsX[movedPosition] | smallCellsX[movedPosition];
+            countCells += smallCellsX[movedPosition] | smallCellsO[movedPosition];
         }
     }
     return countCells == 9 ? Draw : InProgress;
@@ -157,5 +160,28 @@ void State::reset() {
     bigCellsO.reset();
     bigCellsDraw.reset();
     currentPlayer = XMark;
-    lastPosition = {-1, -1};    
+    lastPosition = {-1, -1};
 }
+
+std::vector<State*> State::getAllPossibleStates() const {
+    std::vector<State*> res;
+    std::vector<Position> possibleMoves = getAvailableMoves();
+    for (Position move: possibleMoves) {
+        State* newState = new State(*this);
+        newState->performMove(move);
+        res.emplace_back(newState);
+    }
+    return res;
+}
+
+Position State::getLastPosition() const {
+    return lastPosition;
+}
+
+bool State::operator==(const State& other) const {
+    return smallCellsX == other.smallCellsX && smallCellsO == other.smallCellsO;
+}
+
+PlayerSymbol State::getCurrentPlayer() const {
+    return currentPlayer;
+};

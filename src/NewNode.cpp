@@ -1,10 +1,18 @@
-#include "Node.h"
+#include "NewNode.h"
+
+long long Node::getVisitCount() const {
+    return visitCount;
+}
+
+long double Node::getWinScore() const {
+    return winScore;
+}
 
 Node* Node::getChildWithMaxScore() {
     int mx = -INF;
     Node* res;
     for (Node* child: children) {
-        int totalVisit = child->getState()->getVisitCount();
+        int totalVisit = child->getVisitCount();
         if (totalVisit > mx) {
             mx = totalVisit;
             res = child;
@@ -53,4 +61,16 @@ void Node::deleteTree(Node* node, Node* prohibited) {
 
 Node* Node::getParent() const {
     return parent;
+}
+
+void Node::setWinScore(long double value) {
+    winScore = value;
+}
+
+void Node::incrementVisit() {
+    ++visitCount;
+}
+
+void Node::addScore(long double value) {
+    winScore += value;
 }

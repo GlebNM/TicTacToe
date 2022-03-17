@@ -27,7 +27,6 @@ public:
 
     Node *getChildWithMaxScore();
 
-
     static void deleteTree(Node *, Node *);
 };
 
