@@ -144,3 +144,13 @@ std::vector<Position> State::getAvailableMoves() const {
     }
     return positions;
 }
+
+void State::reset() {
+    smallCellsX.reset();
+    smallCellsO.reset();
+    bigCellsX.reset();
+    bigCellsO.reset();
+    bigCellsDraw.reset();
+    currentPlayer = XMark;
+    lastPosition = {-1, -1};    
+}
