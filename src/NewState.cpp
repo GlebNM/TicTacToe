@@ -1,5 +1,6 @@
 #include "NewState.h"
 #include "NewOther.h"
+
 int State::getSmallCellPosition(Position position) {
     return position.x * 9 + position.y;
 }
@@ -117,7 +118,7 @@ BoardStatus State::checkBigCellStatus(Position position) const {
     for (int i = -1; i <= 1; ++i) {
         for (int j = -1; j <= 1; ++j) {
             int movedPosition = getSmallCellPosition(BigCellCenter.getMoved(i, j));
-            countCells += smallCellsX[movedPosition] | smallCellsX[movedPosition];
+            countCells += smallCellsX[movedPosition] | smallCellsO[movedPosition];
         }
     }
     return countCells == 9 ? Draw : InProgress;

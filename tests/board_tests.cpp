@@ -39,7 +39,7 @@ TEST(StateBasic, BigCellWin) {
     std::vector<Position> res = st.getAvailableMoves();
     std::sort(res.begin(), res.end(), [](auto& l, auto& r) {
         if (l.x < r.x) return true;
-        else return l.y < r.y;
+        return l.x == r.x && l.y < r.y;
     });
     EXPECT_TRUE(res == correct);
 }
