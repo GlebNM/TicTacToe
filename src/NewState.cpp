@@ -99,8 +99,8 @@ BoardStatus State::checkBigCellStatus(Position position) const {
             int movedPosition1 = getSmallCellPosition(BigCellCenter.getMoved(i, j));
             int movedPosition2 = getSmallCellPosition(BigCellCenter.getMoved(j, i));
             horizontalX &= smallCellsX[movedPosition1];
-            horizontalO &= smallCellsX[movedPosition2];
-            verticalX &= smallCellsO[movedPosition1];
+            horizontalO &= smallCellsO[movedPosition1];
+            verticalX &= smallCellsX[movedPosition2];
             verticalO &= smallCellsO[movedPosition2];
         }
         if (horizontalX || verticalX)

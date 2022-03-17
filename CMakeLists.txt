@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_CXX_FLAGS_RELEASE "-O2")
-set(CMAKE_CXX_FLAGS_DEBUG "-O0 -Wall -Wextra -fsanitize=address -fsanitize=leak")
+set(CMAKE_CXX_FLAGS_DEBUG "-O0 -Wall -Wextra -fsanitize=address -fsanitize=leak -gdwarf-4")
 
 option(ENABLE_TESTING "enable google tests" ON)
 option(ENABLE_BENCHMARK "enable google benchmark" OFF)
