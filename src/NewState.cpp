@@ -1,6 +1,5 @@
 #include "NewState.h"
 #include "NewOther.h"
-
 int State::getSmallCellPosition(Position position) {
     return position.x * 9 + position.y;
 }
@@ -12,6 +11,12 @@ int State::getBigCellPosition(Position position) {
 bool State::isOccupied(Position position) const {
     return smallCellsX[getSmallCellPosition(position)] ||
            smallCellsO[getSmallCellPosition(position)];
+}
+
+bool State::isBigCellInProgress(Position position) const {
+    int bigCellPosition = position.x * 3 + position.y;
+    return !(bigCellsX[bigCellPosition] || bigCellsO[bigCellPosition] ||
+             bigCellsDraw[bigCellPosition]);
 }
 
 State::State() : currentPlayer(XMark), lastPosition(-1, -1) {}
@@ -73,18 +78,18 @@ bool State::checkOverallStatus(PlayerSymbol playerSymbol) const {
 }
 
 BoardStatus State::checkBigCellStatus(Position position) const {
-    Position BigCellCenter = {position.x * 3 + 1, position.y * 3 + 1};
+    Position BigCellCenter{position.x * 3 + 1, position.y * 3 + 1};
     bool diagonal1X = true;
     bool diagonal2X = true;
     bool diagonal1O = true;
     bool diagonal2O = true;
     for (int i = -1; i <= 1; ++i) {
-        Position movedPosition1 = BigCellCenter.getMoved(i, -i);
-        Position movedPosition2 = BigCellCenter.getMoved(-i, i);
-        diagonal1X &= smallCellsX[getSmallCellPosition(movedPosition1)];
-        diagonal2X &= smallCellsX[getSmallCellPosition(movedPosition2)];
-        diagonal1O &= smallCellsO[getSmallCellPosition(movedPosition1)];
-        diagonal2O &= smallCellsO[getSmallCellPosition(movedPosition2)];
+        int movedPosition1 = getSmallCellPosition(BigCellCenter.getMoved(i, i));
+        int movedPosition2 = getSmallCellPosition(BigCellCenter.getMoved(i, -i));
+        diagonal1X &= smallCellsX[movedPosition1];
+        diagonal2X &= smallCellsX[movedPosition2];
+        diagonal1O &= smallCellsO[movedPosition1];
+        diagonal2O &= smallCellsO[movedPosition2];
     }
     if (diagonal1X || diagonal2X)
         return XWin;
@@ -125,20 +130,20 @@ bool State::checkBigCellStatus(Position position, PlayerSymbol playerSymbol) con
 }
 
 std::vector<Position> State::getAvailableMoves() const {
-    Position nextBigCell = {lastPosition.x % 3, lastPosition.y % 3};
-    BoardStatus status = checkBigCellStatus(nextBigCell);
+    Position nextBigCell{lastPosition.x % 3, lastPosition.y % 3};
     std::vector<Position> positions;
-    if ((lastPosition.x == -1 && lastPosition.y == -1) || status != InProgress) {
+    if ((lastPosition.x == -1 && lastPosition.y == -1) || !isBigCellInProgress(nextBigCell)) {
         for (int i = 0; i < 81; ++i) {
-            if (!isOccupied({i / 9, i % 9}))
+            if (isBigCellInProgress({i / 9 / 3, (i % 9) / 3}) &&
+                !isOccupied({i / 9, i % 9}))
                 positions.emplace_back(i / 9, i % 9);
         }
     } else {
-        Position BigCellCorner = {nextBigCell.x * 3, nextBigCell.y * 3};
+        Position BigCellCorner{nextBigCell.x * 3, nextBigCell.y * 3};
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
                 if (!isOccupied(BigCellCorner.getMoved(i, j)))
-                    positions.emplace_back(BigCellCorner.getMoved(i, j));
+                    positions.push_back(BigCellCorner.getMoved(i, j));
             }
         }
     }

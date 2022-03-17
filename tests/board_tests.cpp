@@ -11,11 +11,11 @@ TEST(StateBasic, BigCellWin) {
     st.performMove({0, 2});
     st.performMove({2, 0});
     EXPECT_EQ(st.checkBigCellStatus({0, 0}), BoardStatus::XWin);
-    st.performMove({9, 9});
+    st.performMove({8, 8});
     st.performMove({1, 4});
     st.performMove({0, 3});
     st.performMove({0, 5});
-    st.performMove({9, 8});
+    st.performMove({8, 7});
     EXPECT_EQ(st.checkBigCellStatus({0, 1}), BoardStatus::InProgress);
     st.performMove({2, 3});
     EXPECT_EQ(st.checkBigCellStatus({0, 1}), BoardStatus::XWin);

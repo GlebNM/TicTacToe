@@ -22,6 +22,8 @@ private:
     
     bool isOccupied(Position position) const;
     
+    bool isBigCellInProgress(Position position) const;
+    
 public:
     State();
 
