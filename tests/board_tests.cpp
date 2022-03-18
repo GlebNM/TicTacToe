@@ -2,6 +2,7 @@
 #include "State.h"
 #include "MCTS.h"
 #include <vector>
+#include <algorithm>
 
 TEST(StateTest, BigCellWin) {
     State st;
