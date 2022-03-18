@@ -1,6 +1,6 @@
 project(lib)
 
-set(SOURCES NewState.cpp NewOther.cpp
-        NewNode.cpp NewUCT.cpp NewMCTS.cpp)
+set(SOURCES State.cpp Other.cpp
+        Node.cpp UCT.cpp MCTS.cpp)
 
 add_library(lib ${SOURCES})

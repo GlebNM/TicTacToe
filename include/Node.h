@@ -5,28 +5,42 @@
 
 class Node {
 private:
-    State *state;
-    Node *parent;
-    std::vector<Node *> children;
+    State* state;
+    Node* parent;
+    std::vector<Node*> children;
+    long long visitCount = 0;
+    long double winScore = 0;
 public:
-    Node(State *state);
+    Node(State* state);
 
     ~Node();
 
-    State *getState() const;
+    State* getState() const;
 
-    Node *getParent() const;
+    Node* getParent() const;
 
-    const std::vector<Node *> &getChildren() const;
+    const std::vector<Node*>& getChildren() const;
 
-    void setParent(Node *newParent);
+    void setParent(Node* newParent);
 
-    void addChild(Node *child);
+    void addChild(Node* child);
 
-    Node *getRandomChildNode();
+    Node* getRandomChildNode();
 
-    Node *getChildWithMaxScore();
+    Node* getChildWithMaxScore();
 
-    static void deleteTree(Node *, Node *);
+
+    static void deleteTree(Node*, Node*);
+
+    long long getVisitCount() const;
+
+    long double getWinScore() const;
+
+    void setWinScore(long double);
+
+    void incrementVisit();
+
+    void addScore(long double);
 };
+
 

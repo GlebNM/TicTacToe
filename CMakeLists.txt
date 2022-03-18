@@ -25,7 +25,7 @@ target_link_libraries(main lib)
 
 if(ENABLE_TESTING)
     enable_testing()
-    set(TestSources tests/main_test.cpp tests/board_tests.cpp)
+    set(TestSources tests/main_test.cpp tests/board_tests.cpp tests/MCTS_tests.cpp)
     find_package(GTest CONFIG)
     if (GTest_FOUND)
         message("GTest found locally.")

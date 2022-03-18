@@ -6,26 +6,23 @@
 class MonteCarloTreeSearch {
 
 private:
-    static const int WIN_SCORE = 1;
+    Node* root;
 
-    int level;
-    int opponent;
-    Node *root;
+    Node* selectPromisingNode(Node* rootNode);
 
-    Node *selectPromisingNode(Node *rootNode);
+    static void expandNode(Node* node);
 
-    static void expandNode(Node *node);
+    void backPropagation(Node*, BoardStatus, Node*);
 
-    void backPropagation(Node *nodeToExplore, int playerNo, Node *root);
-
-    static int simulateRandomPlayout(Node *node);
+    static BoardStatus simulateRandomPlayout(Node* node);
 
 public:
-    MonteCarloTreeSearch(const Board &, int);
+    MonteCarloTreeSearch(const State&);
 
     Position findNextMove(int);
 
-    void reRoot(const Board&, int);
+    void reRoot(const State&);
 };
+
 
 
