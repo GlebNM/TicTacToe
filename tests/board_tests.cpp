@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "NewState.h"
+#include "NewMCTS.h"
 #include <vector>
 
 TEST(StateTest, BigCellWin) {
@@ -72,4 +73,30 @@ TEST(StateTest, moveGeneration) {
         else return l.x < r.x;
     });
     EXPECT_TRUE(res == correct);
+}
+
+TEST(MCTS, Test1) {
+    State st;
+    st.performMove({0, 0});
+    st.performMove({1, 0});
+    st.performMove({0, 1});
+    st.performMove({1, 1});
+    st.performMove({0, 2});
+    st.performMove({3, 3});
+
+    st.performMove({0, 4});
+    st.performMove({0, 3});
+    st.performMove({1, 4});
+    st.performMove({1, 3});
+    st.performMove({2, 4});
+    st.performMove({5, 5});
+
+    st.performMove({2, 6});
+    st.performMove({8, 8});
+    st.performMove({1, 7});
+    st.performMove({0, 6});
+
+    MonteCarloTreeSearch mcts(st, XMark);
+    Position move = mcts.findNextMove(100);
+    ASSERT_EQ(move, Position(0, 8));
 }

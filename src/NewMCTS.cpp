@@ -17,7 +17,7 @@ void MonteCarloTreeSearch::expandNode(Node* node) {
         newNode->setParent(node);
         node->addChild(newNode);
     }
-    //for (auto state: possibleStates)delete state;
+    for (auto state: possibleStates)delete state;
 }
 
 void MonteCarloTreeSearch::backPropagation(Node* nodeToExplore, BoardStatus status, Node* rootNode) {
@@ -70,10 +70,10 @@ Position MonteCarloTreeSearch::findNextMove(int time) {
     int cnt = 10000;
     auto start = std::chrono::steady_clock::now();
     auto end = std::chrono::steady_clock::now();
-    while (std::chrono::duration_cast<std::chrono::milliseconds>(end - start) < TIME_LIMIT) {
+    while (cnt--) {
         Node* promisingNode = selectPromisingNode(rootNode);
         if (promisingNode->getState()->checkOverallStatus() == BoardStatus::InProgress &&
-            promisingNode->getVisitCount()) {
+            promisingNode->getVisitCount() != 0) {
             expandNode(promisingNode);
         }
         Node* nodeToExplore = promisingNode;

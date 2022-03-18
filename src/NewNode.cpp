@@ -1,5 +1,5 @@
 #include "NewNode.h"
-
+#include "cassert"
 long long Node::getVisitCount() const {
     return visitCount;
 }
@@ -9,15 +9,16 @@ long double Node::getWinScore() const {
 }
 
 Node* Node::getChildWithMaxScore() {
-    int mx = -INF;
+    long long mx = -INF;
     Node* res;
     for (Node* child: children) {
-        int totalVisit = child->getVisitCount();
+        long long totalVisit = child->getVisitCount();
         if (totalVisit > mx) {
             mx = totalVisit;
             res = child;
         }
     }
+    assert(res != nullptr);
     return res;
 }
 
@@ -29,7 +30,9 @@ Node::~Node() {
     children.clear();
 }
 
-Node::Node(State* state) : state(state) {}
+Node::Node(State* nstate) {
+    state = new State(*nstate);
+}
 
 const std::vector<Node*>& Node::getChildren() const {
     return children;

@@ -9,7 +9,7 @@ private:
     Node* parent;
     std::vector<Node*> children;
     long long visitCount = 0;
-    long double winScore;
+    long double winScore = 0;
 public:
     Node(State* state);
 

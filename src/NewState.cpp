@@ -135,6 +135,7 @@ bool State::checkBigCellStatus(Position position, PlayerSymbol playerSymbol) con
 std::vector<Position> State::getAvailableMoves() const {
     Position nextBigCell{lastPosition.x % 3, lastPosition.y % 3};
     std::vector<Position> positions;
+    positions.reserve(81);
     if ((lastPosition.x == -1 && lastPosition.y == -1) || !isBigCellInProgress(nextBigCell)) {
         for (int i = 0; i < 81; ++i) {
             if (isBigCellInProgress({i / 9 / 3, (i % 9) / 3}) &&
@@ -166,6 +167,7 @@ void State::reset() {
 std::vector<State*> State::getAllPossibleStates() const {
     std::vector<State*> res;
     std::vector<Position> possibleMoves = getAvailableMoves();
+    res.reserve(possibleMoves.size());
     for (Position move: possibleMoves) {
         State* newState = new State(*this);
         newState->performMove(move);
@@ -184,4 +186,30 @@ bool State::operator==(const State& other) const {
 
 PlayerSymbol State::getCurrentPlayer() const {
     return currentPlayer;
+}
+
+void State::print() const {
+    std::vector<std::vector<char>> result(9, std::vector<char>(9, '.'));
+    for (int i = 0; i < 81; ++i) {
+        if (smallCellsX[i]) {
+            result[i / 9][i % 9] = 'x';
+        }
+    }
+    for (int i = 0; i < 81; ++i) {
+        if (smallCellsO[i]) {
+            result[i / 9][i % 9] = 'o';
+        }
+    }
+    for (int i = 0; i < 9; ++i) {
+        for (int j = 0; j < 9; ++j) {
+            std::cout << result[i][j];
+            if (j % 3 == 2)
+                std::cout << ' ';
+        }
+        std::cout << std::endl;
+        if (i % 3 == 2) {
+            std::cout << std::endl;
+        }
+    }
 };
+

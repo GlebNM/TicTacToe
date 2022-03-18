@@ -1,6 +1,8 @@
 #include "NewUCT.h"
+#include <cassert>
+#include <iostream>
 
-long double UCT::uctValue(int totalVisit, long double nodeWinScore, int nodeVisit) {
+long double UCT::uctValue(long long totalVisit, long double nodeWinScore, long long nodeVisit) {
     if (nodeVisit == 0) {
         return INF;
     }
@@ -9,7 +11,7 @@ long double UCT::uctValue(int totalVisit, long double nodeWinScore, int nodeVisi
 }
 
 Node* UCT::findBestMoveWithUct(Node* node) {
-    int parentVisit = node->getVisitCount();
+    long long parentVisit = node->getVisitCount();
     long double mx = -INF;
     Node* result = node;
     for (Node* child: node->getChildren()) {

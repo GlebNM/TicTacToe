@@ -48,4 +48,6 @@ public:
     bool operator==(const State& other) const;
 
     PlayerSymbol getCurrentPlayer() const;
+
+    void print() const;
 };

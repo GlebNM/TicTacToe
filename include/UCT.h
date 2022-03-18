@@ -5,7 +5,7 @@
 
 class UCT {
 private:
-    static long double uctValue(int totalVisit, long double nodeWinScore, int nodeVisit);
+    static long double uctValue( totalVisit, long double nodeWinScore, int nodeVisit);
 
 public:
     static Node *findBestMoveWithUct(Node *node);
