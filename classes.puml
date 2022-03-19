@@ -27,26 +27,15 @@ class Position {
     + int y
 }
 
-class Agent {
-    PlayerSymbol me
-}
-
-Agent --o PlayerSymbol
-
-class HumanPlayer {
-
-}
-
-class HumanPlayer implements Agent
-class Bot implements Agent
-
 class MCTSAgent {
-    -State state
+    -Node* root
+    -Node* selectPromisingNode()
+    -{static} expandNode(Node*)
+    -void backPropagation(Node*, BoardStatus, Node*)
+    -{static} BoardStatus simulateRandonPlayout(Node*)
 }
 
-class MiniMaxAgent {
-    -State state
-}
+MCTSAgent --* Node
 
 abstract Heuristics {
     
@@ -61,21 +50,50 @@ class Heuristic2 {
 }
 
 class State {
-    - __uint128 smallFieldX
-    - __uint128 smallFieldO
-    - __uint16 bigFieldX
-    - __uint16 bigFieldO
+    - bitset<81> smallCellsX
+    - bitset<81> smallCellsO
+    - bitset<9> bigCellX
+    - bitset<9> bigCellO
+    - bitset<9> bigCellDraw
+    - {static} int getSmallCellPosition(Position)
+    - {static} int getBigCellPosition(Position)
+    - bool isOccupied(Position)
+    - bool isBigCellInProgress(Position)
+
     + PlayerSymbol currentPlayer
     + Position lastPosition
     + void PerformMove(Position)
     + BoardStatus checkOverallStatus()
     + bool checkOverallStatus(PlayerSymbol)
-    + BoardStatus checkSmallFieldStatus(Position)
-    + bool checkSmallFieldStatus(Position, PlayerSymbol)
+    + BoardStatus checkBigCellStatus(Position)
+    + bool checkBigCellStatus(Position, PlayerSymbol)
     + vector<Position> getAvailableMoves()
+    + vector<State*> getAllPossibleStates()
+    + Position getLastPosition()
+    + PlayerSymbol getCurrentPLayer()
     + void reset()
 }
+class Node {
+    -State* state
+    -Node* parent
+    -vector<Node*> children
+    -int visitCount
+    -double winScore
 
+    +State* getState()
+    +Node* getParent()
+    +vector<Node*>& getChildren()
+    +void setParent(Node*)
+    +void addChild(Node*)
+    +Node* getRandomChildNode()
+    +Node* getChildWithMaxScore()
+    +{static} deleteTree(Node*, Node*)
+    +int getVisitCount()
+    +double getWinScore()
+    +void setWinScore(double)
+    +void incrementVisit()
+    +void addScore(double)
+}
 State --o PlayerSymbol
 State --o Position
 State --o BoardStatus
