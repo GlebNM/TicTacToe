@@ -7,3 +7,4 @@ cmake-build-release/
 benchmark_files/
 benchmark_results/
 benchmark/
+.vscode/

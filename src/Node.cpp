@@ -1,10 +1,18 @@
 #include "Node.h"
 
-Node *Node::getChildWithMaxScore() {
-    int mx = -INF;
-    Node *res;
-    for (Node *child:children) {
-        int totalVisit = child->getState()->getVisitCount();
+long long Node::getVisitCount() const {
+    return visitCount;
+}
+
+long double Node::getWinScore() const {
+    return winScore;
+}
+
+Node* Node::getChildWithMaxScore() {
+    long long mx = -INF;
+    Node* res;
+    for (Node* child: children) {
+        long long totalVisit = child->getVisitCount();
         if (totalVisit > mx) {
             mx = totalVisit;
             res = child;
@@ -13,7 +21,7 @@ Node *Node::getChildWithMaxScore() {
     return res;
 }
 
-State *Node::getState() const {
+State* Node::getState() const {
     return state;
 }
 
@@ -21,36 +29,50 @@ Node::~Node() {
     children.clear();
 }
 
-Node::Node(State *state) : state(state) {}
+Node::Node(State* nstate) {
+    state = new State(*nstate);
+}
 
-const std::vector<Node *> &Node::getChildren() const {
+const std::vector<Node*>& Node::getChildren() const {
     return children;
 }
 
-void Node::setParent(Node *newParent) {
+void Node::setParent(Node* newParent) {
     Node::parent = newParent;
 }
 
-void Node::addChild(Node *child) {
+void Node::addChild(Node* child) {
     children.emplace_back(child);
 }
 
-Node *Node::getRandomChildNode() {
+Node* Node::getRandomChildNode() {
     int numberOfChildren = static_cast<int>(children.size());
     int pos = rand() % numberOfChildren;
     return children[pos];
 }
 
-void Node::deleteTree(Node *node, Node *prohibited) {
+void Node::deleteTree(Node* node, Node* prohibited) {
     if (node == prohibited)return;
-    std::vector<Node *> children = node->getChildren();
-    for (Node *child: children) {
+    std::vector<Node*> children = node->getChildren();
+    for (Node* child: children) {
         if (child != nullptr)deleteTree(child, prohibited);
     }
     delete node->getState();
     delete node;
 }
 
-Node *Node::getParent() const {
+Node* Node::getParent() const {
     return parent;
+}
+
+void Node::setWinScore(long double value) {
+    winScore = value;
+}
+
+void Node::incrementVisit() {
+    ++visitCount;
+}
+
+void Node::addScore(long double value) {
+    winScore += value;
 }

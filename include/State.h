@@ -1,43 +1,53 @@
 #pragma once
 
-#include "Board.h"
+#include "Other.h"
+#include <bitset>
 #include <vector>
-#include <iostream>
 
 class State {
 private:
-    Board board;
-    int playerNo;
-    long long int visitCount;
-    long double winScore;
+    std::bitset<81> smallCellsX;
+    std::bitset<81> smallCellsO;
+
+    std::bitset<9> bigCellsX;
+    std::bitset<9> bigCellsO;
+    std::bitset<9> bigCellsDraw;
+
+    PlayerSymbol currentPlayer;
+    Position lastPosition;
+
+    static int getSmallCellPosition(Position position);
+
+    static int getBigCellPosition(Position position);
+
+    bool isOccupied(Position position) const;
+
+    bool isBigCellInProgress(Position position) const;
+
 public:
-    void setBoard(const Board &newBoard);
+    State();
+
+    void performMove(Position position);
+
+    BoardStatus checkOverallStatus() const;
+
+    bool checkOverallStatus(PlayerSymbol playerSymbol) const;
+
+    BoardStatus checkBigCellStatus(Position position) const;
+
+    bool checkBigCellStatus(Position position, PlayerSymbol playerSymbol) const;
+
+    std::vector<Position> getAvailableMoves() const;
+
+    void reset();
 
     std::vector<State*> getAllPossibleStates() const;
 
-    void randomPlay();
+    Position getLastPosition() const;
 
-    const Board& getBoard() const;
+    bool operator==(const State& other) const;
 
-    int getPlayerNo() const;
+    PlayerSymbol getCurrentPlayer() const;
 
-    int getOpponent();
-
-    long long getVisitCount();
-
-    long double getWinScore() const;
-
-    void setPlayerNo(int newPlayerNo);
-
-    void setVisitCount(int newVisitCount);
-
-    void setWinScore(long double newWinScore);
-
-    void addScore(long double add);
-
-    void incrementVisit();
-
-    void togglePlayer();
-
-    ~State();
+    void print() const;
 };

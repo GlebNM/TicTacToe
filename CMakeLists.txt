@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_CXX_FLAGS_RELEASE "-O2")
-set(CMAKE_CXX_FLAGS_DEBUG "-O0 -Wall -Wextra -fsanitize=address -fsanitize=leak")
+set(CMAKE_CXX_FLAGS_DEBUG "-O0 -Wall -Wextra -fsanitize=address -fsanitize=leak -gdwarf-4")
 
 option(ENABLE_TESTING "enable google tests" ON)
 option(ENABLE_BENCHMARK "enable google benchmark" OFF)
@@ -25,7 +25,7 @@ target_link_libraries(main lib)
 
 if(ENABLE_TESTING)
     enable_testing()
-    set(TestSources tests/main_test.cpp tests/board_tests.cpp)
+    set(TestSources tests/main_test.cpp tests/board_tests.cpp tests/MCTS_tests.cpp)
     find_package(GTest CONFIG)
     if (GTest_FOUND)
         message("GTest found locally.")

@@ -1,5 +1,6 @@
 project(lib)
 
-set(SOURCES Board.cpp MCTS.cpp MiniMax.cpp Node.cpp Other.cpp State.cpp UCT.cpp)
+set(SOURCES State.cpp Other.cpp
+        Node.cpp UCT.cpp MCTS.cpp)
 
 add_library(lib ${SOURCES})
