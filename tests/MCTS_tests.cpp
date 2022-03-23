@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "MCTS.h"
+#include "MCTSAgent.h"
 #include "State.h"
 #include <vector>
 
@@ -25,8 +25,9 @@ TEST(MCTS, Test1) {
     st.performMove({1, 7});
     st.performMove({0, 6});
 
-    MonteCarloTreeSearch mcts(st);
-    Position move = mcts.findNextMove(100);
+    MCTSAgent mcts;
+    mcts.init(st);
+    Position move = mcts.choseBestMove(100);
     ASSERT_EQ(move, Position(0, 8));
 }
 
@@ -36,7 +37,8 @@ TEST(MCTS, againstRandom) {
     for (int i = 0; i < numGames; i++) {
         State st;
         while (st.checkOverallStatus() == InProgress) {
-            MonteCarloTreeSearch mcts(st);
+            MCTSAgent mcts;
+            mcts.init(st);
             Position move = mcts.findNextMove(50);
             st.performMove(move);
             if (st.checkOverallStatus() != InProgress)break;

@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 #include "State.h"
-#include "MCTS.h"
+#include "MCTSAgent.h"
 #include <vector>
 #include <algorithm>
 
