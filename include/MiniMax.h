@@ -1,17 +1,33 @@
 #pragma once
 
-#include "Node.h"
+#include "State.h"
+#include "Bot.h"
 
-class minimax {
+class MiniMaxAgent : public Bot {
+private:
+    State state;
 public:
-    static Position findNextMove(const Board &, int (const Board &, int, int, int), int);
 
-    static int calculate(Board, int, int, int, int, int(const Board &, int, int, int), int);
+    MiniMaxAgent() = default;
 
-    static int evaluate1(const Board &, int, int, int);
+    int calculate(const State&, int, int, int, int, int(const State&, int, int, int), int);
 
-    static int evaluate2(const Board &, int, int, int);
+    int evaluate1(const State&, BoardStatus, int, int);
 
-    static Position
-    findNextMoveWithTimeLimit(const Board &board, int (*evaluation)(const Board &, int, int, int), int timeLimit);
+    int evaluate2(const State&, BoardStatus, int, int);
+
+    Position
+    findNextMoveWithTimeLimit(int (* evaluation)(const State&, int, int, int), int timeLimit);
+
+    void init(const State&) final;
+
+    Position choseBestMove(int) final;
+
+    void performMove(Position) final;
+
+    void resetGame() final;
+
+    void setState(const State&) final;
+
+    void setAllPossibleMoves(const std::vector<Position>&) final;
 };

@@ -1,35 +1,12 @@
 #include "MiniMax.h"
 #include <algorithm>
 #include <random>
-
-Position minimax::findNextMove(const Board &board, int evaluation(const Board &, int, int, int), int mDepth) {
-    Position result = {-1, -1};
-    int bestVal = -INF;
-
-    std::vector<Position> moves;
-    board.getAvailableMoves(moves);
-
-    std::random_device rd;
-    std::mt19937 g(rd());
-    std::shuffle(moves.begin(), moves.end(), g);
-
-    for (auto move:moves) {
-        Board tempBoard = board;
-        tempBoard.performMove(COMP, move);
-        int curVal = calculate(tempBoard, 1, OPPONENT, -INF, INF, evaluation, mDepth);
-        if (curVal > bestVal) {
-            bestVal = curVal;
-            result = move;
-        }
-    }
-    return result;
-}
+#include <iostream>
 
 Position
-minimax::findNextMoveWithTimeLimit(const Board &board, int (*evaluation)(const Board &, int, int, int), int timeLimit) {
+MiniMaxAgent::findNextMoveWithTimeLimit(int (* evaluation)(const State&, int, int, int), int timeLimit) {
     const milliseconds TIME_LIMIT{timeLimit - 100};
-    std::vector<Position> moves;
-    board.getAvailableMoves(moves);
+    std::vector<Position> moves = state.getAvailableMoves();
 
     std::random_device rd;
     std::mt19937 g(rd());
@@ -37,7 +14,7 @@ minimax::findNextMoveWithTimeLimit(const Board &board, int (*evaluation)(const B
 
     std::vector<std::pair<int, Position>> scores;
     scores.reserve(moves.size());
-    for (auto &move : moves) {
+    for (auto& move: moves) {
         scores.emplace_back(std::make_pair(-INF, move));
     }
     auto start = std::chrono::steady_clock::now();
@@ -45,15 +22,15 @@ minimax::findNextMoveWithTimeLimit(const Board &board, int (*evaluation)(const B
     int depth = 7;
     while (std::chrono::duration_cast<std::chrono::milliseconds>(end - start) < TIME_LIMIT) {
         std::vector<std::pair<int, Position>> tempScores;
-        for (auto &move: scores) {
-            Board tempBoard = board;
-            tempBoard.performMove(COMP, move.second);
+        for (auto& move: scores) {
+            State tempBoard = state;
+            tempBoard.performMove(move.second);
             int curVal = calculate(tempBoard, 1, OPPONENT, -INF, INF, evaluation, depth);
             tempScores.emplace_back(std::make_pair(curVal, move.second));
             end = std::chrono::steady_clock::now();
             if (std::chrono::duration_cast<std::chrono::milliseconds>(end - start) >= TIME_LIMIT)break;
         }
-        std::sort(tempScores.begin(), tempScores.end(), [](auto &l, auto &r) {
+        std::sort(tempScores.begin(), tempScores.end(), [](auto& l, auto& r) {
             return l.first > r.first;
         });
         scores = tempScores;
@@ -61,23 +38,22 @@ minimax::findNextMoveWithTimeLimit(const Board &board, int (*evaluation)(const B
         if (depth > 80)break;
         end = std::chrono::steady_clock::now();
     }
-    std::cerr << "<" << scores[0].first << '/' << depth - 1 << "> ";
+    std::clog << "<" << scores[0].first << '/' << depth - 1 << "> ";
     return scores[0].second;
 }
 
-int minimax::calculate(Board board, int depth, int player, int alpha, int beta,
-                       int evaluation(const Board &, int, int, int), int maxDepth) {
-    int status = board.checkStatus();
-    if (depth == maxDepth || status != Board::IN_PROGRESS) {
-        return evaluation(board, status, depth, player);
+int MiniMaxAgent::calculate(const State& st, int depth, int player, int alpha, int beta,
+                            int evaluation(const State&, int, int, int), int maxDepth) {
+    BoardStatus status = st.checkOverallStatus();
+    if (depth == maxDepth || status != InProgress) {
+        return evaluation(st, status, depth, player);
     }
     if (player == COMP) {
         int best = -INF;
-        std::vector<Position> moves;
-        board.getAvailableMoves(moves);
-        for (auto move:moves) {
-            Board tempBoard = board;
-            tempBoard.performMove(COMP, move);
+        std::vector<Position> moves = st.getAvailableMoves();
+        for (auto move: moves) {
+            State tempBoard = st;
+            tempBoard.performMove(move);
             int curVal = calculate(tempBoard, depth + 1, OPPONENT, alpha, beta, evaluation, maxDepth);
             best = std::max(best, curVal);
             alpha = std::max(best, alpha);
@@ -86,11 +62,10 @@ int minimax::calculate(Board board, int depth, int player, int alpha, int beta,
         return best;
     } else {
         int best = INF;
-        std::vector<Position> moves;
-        board.getAvailableMoves(moves);
-        for (auto move:moves) {
-            Board tempBoard = board;
-            tempBoard.performMove(OPPONENT, move);
+        std::vector<Position> moves = st.getAvailableMoves();
+        for (auto move: moves) {
+            State tempBoard = st;
+            tempBoard.performMove(move);
             int curVal = calculate(tempBoard, depth + 1, COMP, alpha, beta, evaluation, maxDepth);
             best = std::min(best, curVal);
             beta = std::min(best, beta);
@@ -101,10 +76,10 @@ int minimax::calculate(Board board, int depth, int player, int alpha, int beta,
 
 }
 
-int minimax::evaluate1(const Board &board, int status, int depth, int player) {
-    if (status == COMP_WIN)return 10000 - depth;
-    if (status == OPPONENT_WIN)return -10000 + depth;
-    if (status == Board::DRAW)return 0;
+int MiniMaxAgent::evaluate1(const State& board, BoardStatus status, int depth, int player) {
+    if (status == XWin && state.getCurrentPlayer() == XMark)return 10000 - depth;
+    if (status == OWin && state.getCurrentPlayer() == OMark)return -10000 + depth;
+    if (status == Draw)return 0;
     int cnt = 0;
     std::vector<std::vector<signed char>> bigField = board.getBigField();
     for (int i = 0; i < 3; i++) {
@@ -129,7 +104,7 @@ int minimax::evaluate1(const Board &board, int status, int depth, int player) {
     return cnt;
 }
 
-int minimax::evaluate2(const Board &board, int status, int depth, int player) {
+int minimax::evaluate2(const Board& board, int status, int depth, int player) {
     if (status == COMP_WIN)return 10000 - depth;
     if (status == OPPONENT_WIN)return -10000 + depth;
     if (status == Board::DRAW)return 0;
