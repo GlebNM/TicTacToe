@@ -32,19 +32,21 @@ TEST(MCTS, Test1) {
 }
 
 TEST(MCTS, againstRandom) {
-    srand(time(0));
+    srand(70);
     int numGames = 10;
     for (int i = 0; i < numGames; i++) {
         State st;
+        MCTSAgent mcts;
+        mcts.init(st);
         while (st.checkOverallStatus() == InProgress) {
-            MCTSAgent mcts;
-            mcts.init(st);
-            Position move = mcts.findNextMove(50);
+            Position move = mcts.findNextMove(10);
             st.performMove(move);
+            mcts.performMove(move);
             if (st.checkOverallStatus() != InProgress)break;
             std::vector<Position> moves = st.getAvailableMoves();
             int pos = rand() % moves.size();
             st.performMove(moves[pos]);
+            mcts.performMove(moves[pos]);
         }
         int status = st.checkOverallStatus();
         EXPECT_EQ(status, XWin);
