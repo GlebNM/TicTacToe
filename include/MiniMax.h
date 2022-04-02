@@ -6,18 +6,17 @@
 class MiniMaxAgent : public Bot {
 private:
     State state;
+
+    int calculate(const State&, int, int, int, int(const State&, BoardStatus, int depth), int);
+
+    static int evaluate1(const State&, BoardStatus, int);
+
+    static int evaluate2(const State&, BoardStatus, int);
+
+    Position findNextMoveWithTimeLimit(int (* evaluation)(const State&, BoardStatus, int depth), int timeLimit);
+
 public:
-
     MiniMaxAgent() = default;
-
-    int calculate(const State&, int, int, int, int, int(const State&, int, int, int), int);
-
-    int evaluate1(const State&, BoardStatus, int, int);
-
-    int evaluate2(const State&, BoardStatus, int, int);
-
-    Position
-    findNextMoveWithTimeLimit(int (* evaluation)(const State&, int, int, int), int timeLimit);
 
     void init(const State&) final;
 

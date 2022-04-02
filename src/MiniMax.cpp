@@ -3,9 +3,8 @@
 #include <random>
 #include <iostream>
 
-Position
-MiniMaxAgent::findNextMoveWithTimeLimit(int (* evaluation)(const State&, int, int, int), int timeLimit) {
-    const milliseconds TIME_LIMIT{timeLimit - 100};
+Position MiniMaxAgent::findNextMoveWithTimeLimit(int (* evaluation)(const State&, BoardStatus, int), int timeLimit) {
+    const milliseconds TIME_LIMIT{timeLimit - 10};
     std::vector<Position> moves = state.getAvailableMoves();
 
     std::random_device rd;
@@ -19,13 +18,13 @@ MiniMaxAgent::findNextMoveWithTimeLimit(int (* evaluation)(const State&, int, in
     }
     auto start = std::chrono::steady_clock::now();
     auto end = std::chrono::steady_clock::now();
-    int depth = 7;
+    int depth = 1;
     while (std::chrono::duration_cast<std::chrono::milliseconds>(end - start) < TIME_LIMIT) {
         std::vector<std::pair<int, Position>> tempScores;
         for (auto& move: scores) {
             State tempBoard = state;
             tempBoard.performMove(move.second);
-            int curVal = calculate(tempBoard, 1, OPPONENT, -INF, INF, evaluation, depth);
+            int curVal = calculate(tempBoard, 1, -INF, INF, evaluation, depth);
             tempScores.emplace_back(std::make_pair(curVal, move.second));
             end = std::chrono::steady_clock::now();
             if (std::chrono::duration_cast<std::chrono::milliseconds>(end - start) >= TIME_LIMIT)break;
@@ -33,6 +32,9 @@ MiniMaxAgent::findNextMoveWithTimeLimit(int (* evaluation)(const State&, int, in
         std::sort(tempScores.begin(), tempScores.end(), [](auto& l, auto& r) {
             return l.first > r.first;
         });
+        if (state.getCurrentPlayer() == PlayerSymbol::OMark) {
+            std::reverse(tempScores.begin(), tempScores.end());
+        }
         scores = tempScores;
         depth++;
         if (depth > 80)break;
@@ -42,19 +44,19 @@ MiniMaxAgent::findNextMoveWithTimeLimit(int (* evaluation)(const State&, int, in
     return scores[0].second;
 }
 
-int MiniMaxAgent::calculate(const State& st, int depth, int player, int alpha, int beta,
-                            int evaluation(const State&, int, int, int), int maxDepth) {
+int MiniMaxAgent::calculate(const State& st, int depth, int alpha, int beta,
+                            int evaluation(const State&, BoardStatus, int), int maxDepth) {
     BoardStatus status = st.checkOverallStatus();
     if (depth == maxDepth || status != InProgress) {
-        return evaluation(st, status, depth, player);
+        return evaluation(st, status, depth);
     }
-    if (player == COMP) {
+    if (st.getCurrentPlayer() == PlayerSymbol::XMark) {
         int best = -INF;
         std::vector<Position> moves = st.getAvailableMoves();
         for (auto move: moves) {
             State tempBoard = st;
             tempBoard.performMove(move);
-            int curVal = calculate(tempBoard, depth + 1, OPPONENT, alpha, beta, evaluation, maxDepth);
+            int curVal = calculate(tempBoard, depth + 1, alpha, beta, evaluation, maxDepth);
             best = std::max(best, curVal);
             alpha = std::max(best, alpha);
             if (beta <= alpha)break;
@@ -66,7 +68,7 @@ int MiniMaxAgent::calculate(const State& st, int depth, int player, int alpha, i
         for (auto move: moves) {
             State tempBoard = st;
             tempBoard.performMove(move);
-            int curVal = calculate(tempBoard, depth + 1, COMP, alpha, beta, evaluation, maxDepth);
+            int curVal = calculate(tempBoard, depth + 1, alpha, beta, evaluation, maxDepth);
             best = std::min(best, curVal);
             beta = std::min(best, beta);
             if (beta <= alpha)break;
@@ -76,27 +78,31 @@ int MiniMaxAgent::calculate(const State& st, int depth, int player, int alpha, i
 
 }
 
-int MiniMaxAgent::evaluate1(const State& board, BoardStatus status, int depth, int player) {
-    if (status == XWin && state.getCurrentPlayer() == XMark)return 10000 - depth;
-    if (status == OWin && state.getCurrentPlayer() == OMark)return -10000 + depth;
+int MiniMaxAgent::evaluate1(const State& board, BoardStatus status, int depth) {
+    if (status == XWin && board.getCurrentPlayer() == XMark)return 10000 - depth;
+    if (status == OWin && board.getCurrentPlayer() == OMark)return -10000 + depth;
     if (status == Draw)return 0;
     int cnt = 0;
-    std::vector<std::vector<signed char>> bigField = board.getBigField();
+    std::vector<std::bitset<3>> bigCellsX = board.getBigCellsX();
+    std::vector<std::bitset<3>> bigCellsO = board.getBigCellsO();
+    std::vector<std::bitset<3>> bigCellsDraw = board.getBigCellsDraw();
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-            if (bigField[i][j] == COMP_WIN)cnt++;
-            if (bigField[i][j] == OPPONENT_WIN)cnt--;
+            if (bigCellsX[i][j] == BoardStatus::XWin)++cnt;
+            if (bigCellsO[i][j] == BoardStatus::OWin)--cnt;
         }
     }
     cnt *= 100;
-    std::vector<std::vector<signed char>> smallField = board.getSmallField();
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            if (bigField[i][j] != Board::IN_PROGRESS)continue;
-            for (int k = 0; k < 3; k++) {
-                for (int p = 0; p < 3; p++) {
-                    if (smallField[i * 3 + k][j * 3 + p] == COMP)cnt++;
-                    if (smallField[i * 3 + k][j * 3 + p] == OPPONENT)cnt--;
+
+    std::vector<std::bitset<9>> smallCellsX = board.getSmallCellsX();
+    std::vector<std::bitset<9>> smallCellsO = board.getSmallCellsO();
+    for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3; ++j) {
+            if (bigCellsX[i][j] || bigCellsO[i][j] || bigCellsDraw[i][j])continue;
+            for (int k = 0; k < 3; ++k) {
+                for (int p = 0; p < 3; ++p) {
+                    if (smallCellsX[i * 3 + k][j * 3 + p])++cnt;
+                    if (smallCellsO[i * 3 + k][j * 3 + p])--cnt;
                 }
             }
         }
@@ -104,51 +110,79 @@ int MiniMaxAgent::evaluate1(const State& board, BoardStatus status, int depth, i
     return cnt;
 }
 
-int minimax::evaluate2(const Board& board, int status, int depth, int player) {
-    if (status == COMP_WIN)return 10000 - depth;
-    if (status == OPPONENT_WIN)return -10000 + depth;
-    if (status == Board::DRAW)return 0;
+int MiniMaxAgent::evaluate2(const State& board, BoardStatus status, int depth) {
+    if (status == BoardStatus::XWin)return 10000 - depth;
+    if (status == BoardStatus::OWin)return -10000 + depth;
+    if (status == BoardStatus::Draw)return 0;
     int cnt = 0;
-    std::vector<std::vector<signed char>> bigField = board.getBigField();
+    std::vector<std::bitset<3>> bigCellsX = board.getBigCellsX();
+    std::vector<std::bitset<3>> bigCellsO = board.getBigCellsO();
+    std::vector<std::bitset<3>> bigCellsDraw = board.getBigCellsDraw();
 
-    if (bigField[1][1] == COMP_WIN)cnt += 120;
-    if (bigField[1][1] == OPPONENT_WIN)cnt -= 120;
+    if (bigCellsX[1][1])cnt += 120;
+    if (bigCellsO[1][1])cnt -= 120;
 
-    if (bigField[0][0] == COMP_WIN)cnt += 110;
-    if (bigField[0][0] == OPPONENT_WIN)cnt -= 110;
-    if (bigField[0][2] == COMP_WIN)cnt += 110;
-    if (bigField[0][2] == OPPONENT_WIN)cnt -= 110;
-    if (bigField[2][0] == COMP_WIN)cnt += 110;
-    if (bigField[2][0] == OPPONENT_WIN)cnt -= 110;
-    if (bigField[2][2] == COMP_WIN)cnt += 110;
-    if (bigField[2][2] == OPPONENT_WIN)cnt -= 110;
+    if (bigCellsX[0][0])cnt += 110;
+    if (bigCellsO[0][0])cnt -= 110;
+    if (bigCellsX[0][2])cnt += 110;
+    if (bigCellsO[0][2])cnt -= 110;
+    if (bigCellsX[2][0])cnt += 110;
+    if (bigCellsO[2][0])cnt -= 110;
+    if (bigCellsX[2][2])cnt += 110;
+    if (bigCellsO[2][2])cnt -= 110;
 
-    if (bigField[0][1] == COMP_WIN)cnt += 100;
-    if (bigField[0][1] == OPPONENT_WIN)cnt -= 100;
-    if (bigField[1][0] == COMP_WIN)cnt += 100;
-    if (bigField[1][0] == OPPONENT_WIN)cnt -= 100;
-    if (bigField[1][2] == COMP_WIN)cnt += 100;
-    if (bigField[1][2] == OPPONENT_WIN)cnt -= 100;
-    if (bigField[2][1] == COMP_WIN)cnt += 100;
-    if (bigField[2][1] == OPPONENT_WIN)cnt -= 100;
+    if (bigCellsX[0][1])cnt += 100;
+    if (bigCellsO[0][1])cnt -= 100;
+    if (bigCellsX[1][0])cnt += 100;
+    if (bigCellsO[1][0])cnt -= 100;
+    if (bigCellsX[1][2])cnt += 100;
+    if (bigCellsO[1][2])cnt -= 100;
+    if (bigCellsX[2][1])cnt += 100;
+    if (bigCellsO[2][1])cnt -= 100;
 
-    std::vector<std::vector<signed char>> smallField = board.getSmallField();
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            if (bigField[i][j] != Board::IN_PROGRESS)continue;
-            for (int k = 0; k < 3; k++) {
-                for (int p = 0; p < 3; p++) {
-                    if (smallField[i * 3 + k][j * 3 + p] == COMP)cnt++;
-                    if (smallField[i * 3 + k][j * 3 + p] == OPPONENT)cnt--;
+    std::vector<std::bitset<9>> smallCellsX = board.getSmallCellsX();
+    std::vector<std::bitset<9>> smallCellsO = board.getSmallCellsO();
+    for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3; ++j) {
+            if (bigCellsX[i][j] || bigCellsO[i][j] || bigCellsDraw[i][j])continue;
+            for (int k = 0; k < 3; ++k) {
+                for (int p = 0; p < 3; ++p) {
+                    if (smallCellsX[i * 3 + k][j * 3 + p])++cnt;
+                    if (smallCellsO[i * 3 + k][j * 3 + p])--cnt;
                 }
             }
         }
     }
-    std::vector<Position> moves;
-    board.getAvailableMoves(moves);
+    std::vector<Position> moves = board.getAvailableMoves();
     if (moves.size() > 9) {
-        if (player == COMP) cnt += 3;
-        if (player == OPPONENT) cnt -= 3;
+        if (board.getCurrentPlayer() == PlayerSymbol::XMark) {
+            cnt += 3;
+        } else {
+            cnt -= 3;
+        }
     }
     return cnt;
+}
+
+
+void MiniMaxAgent::init(const State& newState) {
+    state = newState;
+}
+
+void MiniMaxAgent::performMove(Position move) {
+    state.performMove(move);
+}
+
+Position MiniMaxAgent::choseBestMove(int timeLimit) {
+    return findNextMoveWithTimeLimit(evaluate2, timeLimit);
+}
+
+void MiniMaxAgent::resetGame() {
+    state.reset();
+}
+
+void MiniMaxAgent::setAllPossibleMoves(const std::vector<Position>&) {}
+
+void MiniMaxAgent::setState(const State& newState) {
+    state = newState;
 }

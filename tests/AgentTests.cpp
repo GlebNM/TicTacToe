@@ -1,10 +1,11 @@
 #include "gtest/gtest.h"
 #include "MCTSAgent.h"
+#include "MiniMax.h"
 #include "State.h"
 #include <vector>
 
 
-TEST(MCTS, Test1) {
+TEST(AgentTests, WinInOneMove) {
     State st;
     st.performMove({0, 0});
     st.performMove({1, 0});
@@ -27,7 +28,11 @@ TEST(MCTS, Test1) {
 
     MCTSAgent mcts;
     mcts.init(st);
+    MiniMaxAgent ma;
+    ma.init(st);
     Position move = mcts.choseBestMove(100);
+    ASSERT_EQ(move, Position(0, 8));
+    move = ma.choseBestMove(100);
     ASSERT_EQ(move, Position(0, 8));
 }
 
