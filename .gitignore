@@ -7,3 +7,4 @@ benchmark_files/
 benchmark_results/
 benchmark/
 .vscode/
+doxygen/

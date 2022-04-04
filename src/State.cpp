@@ -213,3 +213,36 @@ void State::print() const {
     }
 };
 
+template<size_t N>
+std::vector<std::bitset<N> > State::getCells(const std::bitset<N * N>& cells) const {
+    std::vector<std::bitset<N> > result(N, std::bitset<N>());
+    for (size_t i = 0; i < N; ++i) {
+        for (size_t j = 0; j < N; ++j) {
+            result[i][j] = cells[i * N + j];
+        }
+    }
+    return result;
+}
+
+std::vector<std::bitset<9> > State::getSmallCellsO() const {
+    return getCells<9>(smallCellsO);
+}
+
+std::vector<std::bitset<9> > State::getSmallCellsX() const {
+    return getCells<9>(smallCellsX);
+}
+
+std::vector<std::bitset<3> > State::getBigCellsO() const {
+    return getCells<3>(bigCellsO);
+}
+
+std::vector<std::bitset<3> > State::getBigCellsX() const {
+    return getCells<3>(bigCellsX);
+}
+
+std::vector<std::bitset<3> > State::getBigCellsDraw() const {
+    return getCells<3>(bigCellsDraw);
+}
+
+
+
