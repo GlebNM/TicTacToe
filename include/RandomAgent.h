@@ -5,10 +5,9 @@ private:
     State state;
     
 public:
+    RandomAgent() = default;
 
-    RandomAgent();
-
-    ~RandomAgent();
+    ~RandomAgent() = default;
 
     void init(const State&) final;
 

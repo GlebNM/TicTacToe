@@ -2,8 +2,6 @@
 #include <iostream>
 #include <random>
 
-
-
 void RandomAgent::init(const State& nState) {
     state = nState;
 }
@@ -12,7 +10,7 @@ void RandomAgent::resetGame() {
     state.reset();
 }
 
-Position RandomAgent::choseBestMove(int timeLimit) {
+Position RandomAgent::choseBestMove(int) {
     std::vector<Position> allMoves = state.getAvailableMoves();
     std::random_device rd;
     std::mt19937 g(rd());
@@ -30,5 +28,3 @@ void RandomAgent::setState(const State& newState) {
 void RandomAgent::setAllPossibleMoves(const std::vector<Position>&) {
 
 }
-
-
