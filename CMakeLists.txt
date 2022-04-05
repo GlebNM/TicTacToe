@@ -1,4 +1,4 @@
-project(TicTacToe)
+project(TicTacToe CXX)
 
 cmake_minimum_required(VERSION 3.21)
 
@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_CXX_FLAGS_RELEASE "-O2")
-set(CMAKE_CXX_FLAGS_DEBUG "-O0 -Wall -Wextra -fsanitize=address -fsanitize=leak -gdwarf-4")
+set(CMAKE_CXX_FLAGS_DEBUG "-O0 -Wall -Wextra -gdwarf-4")
 
 option(ENABLE_TESTING "enable google tests" ON)
 option(ENABLE_BENCHMARK "enable google benchmark" OFF)
@@ -51,6 +51,19 @@ if(ENABLE_TESTING)
         include(GoogleTest)
         gtest_discover_tests(CTest)
     endif()
+
+    message("Configuring coverage...")
+    set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeModules)
+    if(CMAKE_COMPILER_IS_GNUCXX)
+        include(CodeCoverage)
+        append_coverage_compiler_flags()
+        setup_target_for_coverage_lcov(
+            NAME coverage
+            EXECUTABLE CTest
+            EXCLUDE "11/"
+        )
+    endif()
+
 endif()
 
 if(ENABLE_BENCHMARK)
