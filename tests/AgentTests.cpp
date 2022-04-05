@@ -44,7 +44,7 @@ TEST(MCTS, againstRandom) {
         MCTSAgent mcts;
         mcts.init(st);
         while (st.checkOverallStatus() == InProgress) {
-            Position move = mcts.findNextMove(10);
+            Position move = mcts.findNextMove(20);
             st.performMove(move);
             mcts.performMove(move);
             if (st.checkOverallStatus() != InProgress)break;
@@ -54,6 +54,6 @@ TEST(MCTS, againstRandom) {
             mcts.performMove(moves[pos]);
         }
         int status = st.checkOverallStatus();
-        EXPECT_EQ(status, XWin);
+        ASSERT_EQ(status, XWin);
     }
 }

@@ -24,6 +24,8 @@ add_subdirectory(src)
 target_link_libraries(main lib)
 
 if(ENABLE_TESTING)
+    option(BUILD_COVERAGE "Generate coverage files" ON)
+
     enable_testing()
     set(TestSources tests/main_test.cpp tests/board_tests.cpp tests/AgentTests.cpp)
     find_package(GTest CONFIG)
@@ -51,17 +53,17 @@ if(ENABLE_TESTING)
         include(GoogleTest)
         gtest_discover_tests(CTest)
     endif()
-
-    message("Configuring coverage...")
-    set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeModules)
-    if(CMAKE_COMPILER_IS_GNUCXX)
-        include(CodeCoverage)
-        append_coverage_compiler_flags()
-        setup_target_for_coverage_lcov(
-            NAME coverage
-            EXECUTABLE CTest
-            EXCLUDE "11/"
-        )
+    if (BUILD_COVERAGE)
+        message("Configuring coverage...")
+        set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMakeModules)
+        if(CMAKE_COMPILER_IS_GNUCXX)
+            include(CodeCoverage)
+            append_coverage_compiler_flags()
+            setup_target_for_coverage_lcov(
+                NAME coverage
+                EXECUTABLE CTest
+            )
+        endif()
     endif()
 
 endif()
