@@ -1,3 +1,4 @@
+[![codecov](https://codecov.io/gh/GlebNM/TicTacToe/branch/dev/graph/badge.svg?token=9K3W1ZIT96)](https://codecov.io/gh/GlebNM/TicTacToe)
 # Ultimate Tic-Tac-Toe
 
 ## О проекте
