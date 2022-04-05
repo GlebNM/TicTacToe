@@ -1,3 +1,5 @@
+[![Code Grade](https://api.codiga.io/project/32613/status/svg)](https://www.codiga.io)
+[![Code Grade](https://api.codiga.io/project/32613/score/svg)](https://www.codiga.io)
 [![codecov](https://codecov.io/gh/GlebNM/TicTacToe/branch/dev/graph/badge.svg?token=9K3W1ZIT96)](https://codecov.io/gh/GlebNM/TicTacToe)
 # Ultimate Tic-Tac-Toe
 
