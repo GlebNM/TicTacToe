@@ -31,7 +31,7 @@ if (TEST_COVERAGE)
     if(CMAKE_COMPILER_IS_GNUCXX)
         include(CodeCoverage)
         append_coverage_compiler_flags()
-        setup_target_for_coverage_lcov(
+        setup_target_for_coverage_gcovr_xml(
             NAME coverage
             EXECUTABLE CTest
         )
