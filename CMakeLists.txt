@@ -23,7 +23,7 @@ add_subdirectory(src)
 
 target_link_libraries(main lib)
 
-option(TEST_COVERAGE "generate coverage files" ON)
+option(TEST_COVERAGE "generate coverage files" OFF)
 
 if(TEST_COVERAGE)
     set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMakeModules)
