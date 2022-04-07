@@ -11,6 +11,7 @@ private:
     std::string secondPlayerAlgorithm;
     int secondPlayerTime;
     
+    bool validateInput(std::string);
     bool askInfoAboutBot(std::string, int num);
     int chooseFirstPlayer();
     std::string choosePlayerAlgorithm();
