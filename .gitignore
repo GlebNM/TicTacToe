@@ -1,0 +1,10 @@
+bin/
+build/
+lib/
+.idea
+cmake-build-debug/
+cmake-build-release/
+benchmark_files/
+benchmark_results/
+benchmark/
+.vscode/
