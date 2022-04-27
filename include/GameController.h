@@ -11,9 +11,9 @@ private:
     void printStatus(BoardStatus);
 
 public:
-    void PlayGameEngineEngine(Bot*, Bot*, int, int);
+    void playGameEngineEngine(Bot*, Bot*, int, int);
 
-    void PlayGameEngineHuman(Bot*, bool, int);
+    void playGameEngineHuman(Bot*, bool, int);
 
-    void PlayGameHumanHuman();
+    void playGameHumanHuman();
 };

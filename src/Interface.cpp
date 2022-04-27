@@ -143,9 +143,9 @@ void Interface::game() {
         gameController.playGameHumanHuman();
     } else if (mode == 2) {
         Bot* bot;
-        if (firstPlayerAlgorithm == 1) {
+        if (firstPlayerAlgorithm == "Random") {
             bot = new RandomAgent();
-        } else if (firstPlayerAlgorithm == 2) {
+        } else if (firstPlayerAlgorithm == "MCTS") {
             bot = new MCTSAgent();
         } else {
             bot = new MiniMaxAgent();
@@ -153,21 +153,21 @@ void Interface::game() {
         gameController.playGameEngineHuman(
             bot,
             firstPlayer == 2,
-            firstPlayer == 1 ? firstPlayerTime : secondPlayerTime;
+            firstPlayer == 1 ? firstPlayerTime : secondPlayerTime
         );
     } else {
         Bot* bot1;
         Bot* bot2;
-        if (firstPlayerAlgorithm == 1) {
+        if (firstPlayerAlgorithm == "Random") {
             bot1 = new RandomAgent();
-        } else if (firstPlayerAlgorithm == 2) {
+        } else if (firstPlayerAlgorithm == "MCTS") {
             bot1 = new MCTSAgent();
         } else {
             bot1 = new MiniMaxAgent();
         }
-        if (secondPlayerAlgorithm == 1) {
+        if (secondPlayerAlgorithm == "Random") {
             bot2 = new RandomAgent();
-        } else if (secondtPlayerAlgorithm == 2) {
+        } else if (secondPlayerAlgorithm == "MCTS") {
             bot2 = new MCTSAgent();
         } else {
             bot2 = new MiniMaxAgent();
