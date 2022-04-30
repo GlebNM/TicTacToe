@@ -143,9 +143,11 @@ void Interface::game() {
         gameController.playGameHumanHuman();
     } else if (mode == 2) {
         Bot* bot;
-        if (firstPlayerAlgorithm == "Random") {
+        std::string algorithm = firstPlayer == 1 ? firstPlayerAlgorithm :
+                                                   secondPlayerAlgorithm;
+        if (algorithm == "Random") {
             bot = new RandomAgent();
-        } else if (firstPlayerAlgorithm == "MCTS") {
+        } else if (algorithm == "MCTS") {
             bot = new MCTSAgent();
         } else {
             bot = new MiniMaxAgent();
