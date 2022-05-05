@@ -1,8 +1,12 @@
-#include "../include/Interface.h"
+#include "Interface.h"
+#include "GameController.h"
+#include "RandomAgent.h"
+#include "MiniMax.h"
+#include "MCTSAgent.h"
 #include <iostream>
 
 void Interface::welcomeScreen() {
-
+    std::cout << "Добро пожаловать в Ultimate Tic-Tac-Toe!" << std::endl;
 }
 
 bool Interface::validateInput(std::string ans) {
@@ -133,3 +137,45 @@ bool Interface::chooseMode() {
     return true;
 }
 
+void Interface::game() {
+    GameController gameController;
+    if (mode == 1) {
+        gameController.playGameHumanHuman();
+    } else if (mode == 2) {
+        Bot* bot;
+        std::string algorithm = firstPlayer == 1 ? firstPlayerAlgorithm :
+                                                   secondPlayerAlgorithm;
+        if (algorithm == "Random") {
+            bot = new RandomAgent();
+        } else if (algorithm == "MCTS") {
+            bot = new MCTSAgent();
+        } else {
+            bot = new MiniMaxAgent();
+        }
+        gameController.playGameEngineHuman(
+            bot,
+            firstPlayer == 2,
+            firstPlayer == 1 ? firstPlayerTime : secondPlayerTime
+        );
+    } else {
+        Bot* bot1;
+        Bot* bot2;
+        if (firstPlayerAlgorithm == "Random") {
+            bot1 = new RandomAgent();
+        } else if (firstPlayerAlgorithm == "MCTS") {
+            bot1 = new MCTSAgent();
+        } else {
+            bot1 = new MiniMaxAgent();
+        }
+        if (secondPlayerAlgorithm == "Random") {
+            bot2 = new RandomAgent();
+        } else if (secondPlayerAlgorithm == "MCTS") {
+            bot2 = new MCTSAgent();
+        } else {
+            bot2 = new MiniMaxAgent();
+        }
+        gameController.playGameEngineEngine(
+            bot1, bot2, firstPlayerTime, secondPlayerTime
+        );
+    }
+}

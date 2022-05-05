@@ -8,6 +8,7 @@ Position GameController::inputMove(const std::vector<Position>& availableMoves,
                                    const std::string& name) {
     Position move{-1, -1};
     std::string input;
+    std::cout << std::endl;
     while (true) {
         std::cout << name << ", введите свой ход" << std::endl;
         std::getline(std::cin, input);
@@ -33,7 +34,7 @@ void GameController::printStatus(BoardStatus status) {
     }
 }
 
-void GameController::PlayGameEngineEngine(Bot* engine1, Bot* engine2,
+void GameController::playGameEngineEngine(Bot* engine1, Bot* engine2,
                                           int timelimit1, int timelimit2) {
     State state;
     engine1->init(state);
@@ -59,7 +60,7 @@ void GameController::PlayGameEngineEngine(Bot* engine1, Bot* engine2,
     printStatus(state.checkOverallStatus());
 }
 
-void GameController::PlayGameEngineHuman(Bot* engine, bool isHumanFirst,
+void GameController::playGameEngineHuman(Bot* engine, bool isHumanFirst,
                                          int timelimit) {
     State state;
     engine->init(state);
@@ -87,7 +88,7 @@ void GameController::PlayGameEngineHuman(Bot* engine, bool isHumanFirst,
     printStatus(state.checkOverallStatus());
 }
 
-void GameController::PlayGameHumanHuman() {
+void GameController::playGameHumanHuman() {
     State state;
     auto makeMove = [this, &state](const std::string& name) {
         Position move = inputMove(state.getAvailableMoves(), name);
