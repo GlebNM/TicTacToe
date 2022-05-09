@@ -3,6 +3,43 @@
 #include <cctype>
 #include <iostream>
 #include <algorithm>
+#include <fstream>
+#include "json.hpp"
+
+void updateRatings(int id1, int id2, BoardStatus res) {
+    if (id1 == id2)return;
+    using nlohmann::json;
+    std::ifstream in("ratings.json");
+    json j;
+    in >> j;
+    in.close();
+    std::string sid1 = std::to_string(id1);
+    std::string sid2 = std::to_string(id2);
+    double Ra = j[sid2];
+    double Rb = j[sid1];
+    double Ea = 1.0 / (1 + pow(10, (Rb - Ra) / 400));
+    double Eb = 1.0 / (1 + pow(10, (Ra - Rb) / 400));
+
+    const double K = 20;
+    double Sa = 0;
+    double Sb = 0;
+    if (res == BoardStatus::XWin) {
+        Sa = 1;
+    } else if (res == BoardStatus::Draw) {
+        Sa = 0.5;
+        Sb = 0.5;
+    } else {
+        Sb = 1;
+    }
+
+    double RaNew = Ra + K * (Sa - Ea);
+    double RbNew = Rb + K * (Sb - Eb);
+    j[sid1] = RaNew;
+    j[sid2] = RbNew;
+    std::ofstream out("ratings.json");
+    out << j;
+    out.close();
+}
 
 Position GameController::inputMove(const std::vector<Position>& availableMoves,
                                    const std::string& name) {
@@ -58,6 +95,7 @@ void GameController::playGameEngineEngine(Bot* engine1, Bot* engine2,
         printAndUpdate(move);
     }
     printStatus(state.checkOverallStatus());
+    updateRatings(engine1->getId(), engine2->getId(), state.checkOverallStatus());
 }
 
 void GameController::playGameEngineHuman(Bot* engine, bool isHumanFirst,

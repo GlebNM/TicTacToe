@@ -16,4 +16,6 @@ public:
     virtual void setState(const State&) = 0;
 
     virtual void setAllPossibleMoves(const std::vector<Position>&) = 0;
+
+    virtual int getId() = 0;
 };

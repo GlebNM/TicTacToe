@@ -3,8 +3,14 @@
 class RandomAgent : public Bot {
 private:
     State state;
-    
+
 public:
+    static const int id = 3;
+
+    int getId() {
+        return id;
+    }
+
     RandomAgent() = default;
 
     ~RandomAgent() = default;
