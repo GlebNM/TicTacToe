@@ -29,7 +29,7 @@ Position MiniMaxAgent::findNextMoveWithTimeLimit(int (* evaluation)(const State&
             end = std::chrono::steady_clock::now();
             if (std::chrono::duration_cast<std::chrono::milliseconds>(end - start) >= TIME_LIMIT)break;
         }
-        std::sort(tempScores.begin(), tempScores.end(), [](auto& l, auto& r) {
+        std::sort(tempScores.begin(), tempScores.end(), [](const auto& l, const auto& r) {
             return l.first > r.first;
         });
         if (state.getCurrentPlayer() == PlayerSymbol::OMark) {
