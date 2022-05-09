@@ -18,6 +18,12 @@ private:
     static BoardStatus simulateRandomPlayout(Node* node);
 
 public:
+    static const int id = 2;
+
+    int getId() {
+        return id;
+    }
+
     MCTSAgent();
 
     ~MCTSAgent();
