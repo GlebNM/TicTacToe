@@ -108,6 +108,36 @@ package MiniMax {
 
 }
 
+class GameController {
+    - Position InputMove(const vector<Position>&, const string&)
+    - void printStatus(BoardStatus);
+
+    + void playGameEngineEngine(Bot*, Bot*, int, int);
+    + void playGameEngineHuman(Bot*, bool, int);
+    + void playGameHumanHuman();
+}
+
+class Interface {
+        - int mode;
+        - int firstPlayer;
+        - string firstPlayerAlgorithm;
+        - int firstPlayerTime;
+        - std::string secondPlayerAlgorithm;
+        - int secondPlayerTime;
+        - bool validateInput(string);
+        - bool askInfoAboutBot(std::string, int);
+        - int chooseFirstPlayer();
+        - std::string choosePlayerAlgorithm();
+        - int choosePlayerTime();
+
+        +void welcomeScreen();
+        +bool chooseMode();
+        +void game();
+}
+GameController --o Bot
+GameController --o State
+Interface --* GameController
+
 class MCTSAgent implements Bot
 class MiniMaxAgent implements Bot
 class RandomAgent implements Bot
