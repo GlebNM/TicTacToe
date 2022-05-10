@@ -5,6 +5,8 @@
 
 class Bot {
 public:
+    virtual ~Bot() = default;
+
     virtual void init(const State&) = 0;
 
     virtual Position choseBestMove(int) = 0;

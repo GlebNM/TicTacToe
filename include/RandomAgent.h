@@ -13,7 +13,7 @@ public:
 
     RandomAgent() = default;
 
-    ~RandomAgent() = default;
+    //~RandomAgent() = default;
 
     void init(const State&) final;
 
