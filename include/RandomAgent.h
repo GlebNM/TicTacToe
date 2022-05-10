@@ -5,7 +5,7 @@ private:
     State state;
 
 public:
-    static const int id = 3;
+    static const int id = 0;
 
     int getId() {
         return id;

@@ -15,8 +15,8 @@ void updateRatings(int id1, int id2, BoardStatus res) {
     in.close();
     std::string sid1 = std::to_string(id1);
     std::string sid2 = std::to_string(id2);
-    double Ra = j[sid2];
-    double Rb = j[sid1];
+    double Ra = j[sid1];
+    double Rb = j[sid2];
     double Ea = 1.0 / (1 + pow(10, (Rb - Ra) / 400));
     double Eb = 1.0 / (1 + pow(10, (Ra - Rb) / 400));
 
