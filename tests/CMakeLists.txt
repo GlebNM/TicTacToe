@@ -1,4 +1,4 @@
-set(TestSources main_test.cpp board_tests.cpp AgentTests.cpp)
+set(TestSources main_test.cpp board_tests.cpp gamecontroller_tests.cpp AgentTests.cpp minimax_tests.cpp)
 find_package(GTest CONFIG)
 if (GTest_FOUND)
     message("GTest found locally.")
@@ -31,7 +31,7 @@ if (TEST_COVERAGE)
     if(CMAKE_COMPILER_IS_GNUCXX)
         include(CodeCoverage)
         append_coverage_compiler_flags()
-        setup_target_for_coverage_gcovr_xml(
+        setup_target_for_coverage_lcov(
             NAME coverage
             EXECUTABLE CTest
             EXCLUDE "${CMAKE_SOURCE_DIR}/tests"
