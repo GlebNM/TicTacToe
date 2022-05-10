@@ -157,6 +157,7 @@ void Interface::game() {
             firstPlayer == 2,
             firstPlayer == 1 ? firstPlayerTime : secondPlayerTime
         );
+        delete bot;
     } else {
         Bot* bot1;
         Bot* bot2;
@@ -177,5 +178,7 @@ void Interface::game() {
         gameController.playGameEngineEngine(
             bot1, bot2, firstPlayerTime, secondPlayerTime
         );
+        delete bot1;
+        delete bot2;
     }
 }
