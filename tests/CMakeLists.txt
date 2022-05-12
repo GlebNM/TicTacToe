@@ -34,7 +34,8 @@ if (TEST_COVERAGE)
         setup_target_for_coverage_gcovr_xml(
             NAME coverage
             EXECUTABLE CTest
-            EXCLUDE "${CMAKE_SOURCE_DIR}/tests"
+            EXCLUDE "${CMAKE_SOURCE_DIR}/tests 
+                    ${CMAKE_SOURCE_DOR}/nlohmann"
         )
     endif()
 endif()
