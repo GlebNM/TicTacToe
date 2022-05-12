@@ -11,7 +11,7 @@ TEST(MinimaxTest, AllWins) {
 		Bot* bot1 = new RandomAgent();
 		Bot* bot2 = new MiniMaxAgent();
 		testing::internal::CaptureStdout();
-		game.playGameEngineEngine(bot1, bot2, 1000, 1000);
+		game.playGameEngineEngine(bot1, bot2, 10, 10);
 		std::string ans = "";
 		for (auto str : testing::internal::GetCapturedStdout())
 			ans += str;

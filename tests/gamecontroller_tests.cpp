@@ -65,7 +65,7 @@ TEST(GameController, EngineHuman) {
 	EXPECT_CALL(game, inputMove(testing::_, testing::_))
      		.WillRepeatedly(testing::Invoke([&](const std::vector<Position>& availableMoves, const std::string& name) -> Position { return availableMoves[0]; }));
     Bot* bot = new MiniMaxAgent();
-    game.playGameEngineHuman(bot, true, 1000);
+    game.playGameEngineHuman(bot, true, 10);
     std::string ans = "";
 	for (auto str : testing::internal::GetCapturedStdout())
 		ans += str;
