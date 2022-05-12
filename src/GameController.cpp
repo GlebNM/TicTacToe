@@ -11,7 +11,18 @@ void updateRatings(int id1, int id2, BoardStatus res) {
     using nlohmann::json;
     std::ifstream in("ratings.json");
     json j;
-    in >> j;
+    
+    try {
+        in >> j;
+    } catch (...) {
+        in.close();
+        std::ofstream out("ratings.json");
+        out << "{\"0\":1000,\"1\":1000,\"2\":1000}\n";
+        out.close();
+        in.open("ratings.json");
+        in >> j;
+    }
+    
     in.close();
     std::string sid1 = std::to_string(id1);
     std::string sid2 = std::to_string(id2);
