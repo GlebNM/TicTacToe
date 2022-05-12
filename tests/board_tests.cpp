@@ -41,6 +41,7 @@ TEST(StateTest, BigCellWin) {
 }
 
 TEST(StateTest, moveGeneration) {
+    testing::internal::CaptureStdout();
     /*
         whole board moves
     */
@@ -74,4 +75,5 @@ TEST(StateTest, moveGeneration) {
         else return l.x < r.x;
     });
     EXPECT_TRUE(res == correct);
+    std::cout << testing::internal::GetCapturedStdout() << std::endl;
 }
