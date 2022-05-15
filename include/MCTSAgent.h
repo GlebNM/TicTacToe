@@ -2,8 +2,9 @@
 
 #include "Node.h"
 #include "UCT.h"
+#include "Bot.h"
 
-class MonteCarloTreeSearch {
+class MCTSAgent : public Bot {
 
 private:
     Node* root;
@@ -17,11 +18,25 @@ private:
     static BoardStatus simulateRandomPlayout(Node* node);
 
 public:
-    MonteCarloTreeSearch(const State&);
+    MCTSAgent();
+
+    ~MCTSAgent();
 
     Position findNextMove(int);
 
     void reRoot(const State&);
+
+    void init(const State&) final;
+
+    Position choseBestMove(int) final;
+
+    void performMove(Position) final;
+
+    void setState(const State&) final;
+
+    void setAllPossibleMoves(const std::vector<Position>&) final;
+
+    void resetGame() final;
 };
 
 

@@ -26,28 +26,38 @@ class Position {
     + int x
     + int y
 }
+package MCTS {
+    class MCTSAgent {
+        -Node* root
+        -Node* selectPromisingNode()
+        -{static} expandNode(Node*)
+        -void backPropagation(Node*, BoardStatus, Node*)
+        -{static} BoardStatus simulateRandonPlayout(Node*)
+    }
+    class Node {
+        -State* state
+        -Node* parent
+        -vector<Node*> children
+        -int visitCount
+        -double winScore
 
-class MCTSAgent {
-    -Node* root
-    -Node* selectPromisingNode()
-    -{static} expandNode(Node*)
-    -void backPropagation(Node*, BoardStatus, Node*)
-    -{static} BoardStatus simulateRandonPlayout(Node*)
+        +State* getState()
+        +Node* getParent()
+        +vector<Node*>& getChildren()
+        +void setParent(Node*)
+        +void addChild(Node*)
+        +Node* getRandomChildNode()
+        +Node* getChildWithMaxScore()
+        +{static} deleteTree(Node*, Node*)
+        +int getVisitCount()
+        +double getWinScore()
+        +void setWinScore(double)
+        +void incrementVisit()
+        +void addScore(double)
+    }
 }
 
 MCTSAgent --* Node
-
-abstract Heuristics {
-    
-}
-
-class Heuristic1 {
-
-}
-
-class Heuristic2 {
-
-}
 
 class State {
     - bitset<81> smallCellsX
@@ -73,37 +83,30 @@ class State {
     + PlayerSymbol getCurrentPLayer()
     + void reset()
 }
-class Node {
-    -State* state
-    -Node* parent
-    -vector<Node*> children
-    -int visitCount
-    -double winScore
 
-    +State* getState()
-    +Node* getParent()
-    +vector<Node*>& getChildren()
-    +void setParent(Node*)
-    +void addChild(Node*)
-    +Node* getRandomChildNode()
-    +Node* getChildWithMaxScore()
-    +{static} deleteTree(Node*, Node*)
-    +int getVisitCount()
-    +double getWinScore()
-    +void setWinScore(double)
-    +void incrementVisit()
-    +void addScore(double)
-}
 State --o PlayerSymbol
 State --o Position
 State --o BoardStatus
 class RandomAgent {
     
 }
+package MiniMax {
+    abstract Heuristics {
+        
+    }
 
-MiniMaxAgent --o State
-MCTSAgent --o State
-MiniMaxAgent --* Heuristics
+    class Heuristic1 {
+
+    }
+
+    class Heuristic2 {
+
+    }
+    MiniMaxAgent --o State
+    MCTSAgent --o State
+    MiniMaxAgent --* Heuristics
+
+}
 
 class MCTSAgent implements Bot
 class MiniMaxAgent implements Bot

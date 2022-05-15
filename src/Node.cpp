@@ -10,7 +10,7 @@ long double Node::getWinScore() const {
 
 Node* Node::getChildWithMaxScore() {
     long long mx = -INF;
-    Node* res;
+    Node* res = nullptr;
     for (Node* child: children) {
         long long totalVisit = child->getVisitCount();
         if (totalVisit > mx) {

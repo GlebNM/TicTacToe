@@ -1,7 +1,7 @@
-#include "MCTS.h"
+#include "MCTSAgent.h"
 #include <iostream>
 
-Node* MonteCarloTreeSearch::selectPromisingNode(Node* rootNode) {
+Node* MCTSAgent::selectPromisingNode(Node* rootNode) {
     Node* node = rootNode;
     while (!node->getChildren().empty()) {
         node = UCT::findBestMoveWithUct(node);
@@ -9,7 +9,7 @@ Node* MonteCarloTreeSearch::selectPromisingNode(Node* rootNode) {
     return node;
 }
 
-void MonteCarloTreeSearch::expandNode(Node* node) {
+void MCTSAgent::expandNode(Node* node) {
     std::vector<State*> possibleStates = node->getState()->getAllPossibleStates();
     for (auto state: possibleStates) {
         Node* newNode = new Node(state);
@@ -18,7 +18,7 @@ void MonteCarloTreeSearch::expandNode(Node* node) {
     }
 }
 
-void MonteCarloTreeSearch::backPropagation(Node* nodeToExplore, BoardStatus status, Node* rootNode) {
+void MCTSAgent::backPropagation(Node* nodeToExplore, BoardStatus status, Node* rootNode) {
     rootNode->incrementVisit();
     Node* tempNode = nodeToExplore;
     while (tempNode != rootNode) {
@@ -35,7 +35,7 @@ void MonteCarloTreeSearch::backPropagation(Node* nodeToExplore, BoardStatus stat
     }
 }
 
-BoardStatus MonteCarloTreeSearch::simulateRandomPlayout(Node* node) {
+BoardStatus MCTSAgent::simulateRandomPlayout(Node* node) {
     State* tempState = new State(*node->getState());
     BoardStatus boardStatus = tempState->checkOverallStatus();
     if (boardStatus == BoardStatus::Draw) {
@@ -61,7 +61,7 @@ BoardStatus MonteCarloTreeSearch::simulateRandomPlayout(Node* node) {
     return boardStatus;
 }
 
-Position MonteCarloTreeSearch::findNextMove(int time) {
+Position MCTSAgent::findNextMove(int time) {
     const milliseconds TIME_LIMIT{time};
     Node* rootNode = root;
     auto start = std::chrono::steady_clock::now();
@@ -85,18 +85,16 @@ Position MonteCarloTreeSearch::findNextMove(int time) {
     std::clog << winnerNode->getWinScore() / winnerNode->getVisitCount() << ' ';
 
     auto result = winnerNode->getState()->getLastPosition();
-    Node::deleteTree(root, winnerNode);
-    root = winnerNode;
     return result;
 }
 
-MonteCarloTreeSearch::MonteCarloTreeSearch(const State& nState) {
-    State* state = new State(nState);
-    Node* rootNode = new Node(state);
-    root = rootNode;
+MCTSAgent::MCTSAgent() = default;
+
+MCTSAgent::~MCTSAgent() {
+    Node::deleteTree(root, nullptr);
 }
 
-void MonteCarloTreeSearch::reRoot(const State& nState) {
+void MCTSAgent::reRoot(const State& nState) {
     std::vector<Node*> children = root->getChildren();
     for (auto child: children) {
         auto smallF = child->getState();
@@ -111,5 +109,36 @@ void MonteCarloTreeSearch::reRoot(const State& nState) {
     State* state = new State(nState);
     Node* rootNode = new Node(state);
     root = rootNode;
+}
+
+void MCTSAgent::init(const State& nState) {
+    State* state = new State(nState);
+    Node* rootNode = new Node(state);
+    root = rootNode;
+}
+
+void MCTSAgent::resetGame() {
+    Node::deleteTree(root, nullptr);
+    State* initialState = new State();
+    Node* rootNode = new Node(initialState);
+    root = rootNode;
+}
+
+Position MCTSAgent::choseBestMove(int timeLimit) {
+    return findNextMove(timeLimit);
+}
+
+void MCTSAgent::performMove(Position move) {
+    State newState = *root->getState();
+    newState.performMove(move);
+    reRoot(newState);
+}
+
+void MCTSAgent::setState(const State& newState) {
+    reRoot(newState);
+}
+
+void MCTSAgent::setAllPossibleMoves(const std::vector<Position>&) {
+
 }
 

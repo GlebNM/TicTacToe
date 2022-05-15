@@ -1,10 +1,11 @@
 #include "gtest/gtest.h"
-#include "MCTS.h"
+#include "MCTSAgent.h"
+#include "MiniMax.h"
 #include "State.h"
 #include <vector>
 
 
-TEST(MCTS, Test1) {
+TEST(AgentTests, WinInOneMove) {
     State st;
     st.performMove({0, 0});
     st.performMove({1, 0});
@@ -25,26 +26,34 @@ TEST(MCTS, Test1) {
     st.performMove({1, 7});
     st.performMove({0, 6});
 
-    MonteCarloTreeSearch mcts(st);
-    Position move = mcts.findNextMove(100);
+    MCTSAgent mcts;
+    mcts.init(st);
+    MiniMaxAgent ma;
+    ma.init(st);
+    Position move = mcts.choseBestMove(100);
+    ASSERT_EQ(move, Position(0, 8));
+    move = ma.choseBestMove(100);
     ASSERT_EQ(move, Position(0, 8));
 }
 
 TEST(MCTS, againstRandom) {
-    srand(time(0));
+    srand(70);
     int numGames = 10;
     for (int i = 0; i < numGames; i++) {
         State st;
+        MCTSAgent mcts;
+        mcts.init(st);
         while (st.checkOverallStatus() == InProgress) {
-            MonteCarloTreeSearch mcts(st);
-            Position move = mcts.findNextMove(50);
+            Position move = mcts.findNextMove(20);
             st.performMove(move);
+            mcts.performMove(move);
             if (st.checkOverallStatus() != InProgress)break;
             std::vector<Position> moves = st.getAvailableMoves();
             int pos = rand() % moves.size();
             st.performMove(moves[pos]);
+            mcts.performMove(moves[pos]);
         }
         int status = st.checkOverallStatus();
-        EXPECT_EQ(status, XWin);
+        ASSERT_EQ(status, XWin);
     }
 }

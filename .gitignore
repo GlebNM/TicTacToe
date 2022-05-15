@@ -2,9 +2,9 @@ bin/
 build/
 lib/
 .idea
-cmake-build-debug/
-cmake-build-release/
+cmake-build*
 benchmark_files/
 benchmark_results/
 benchmark/
 .vscode/
+doxygen/
