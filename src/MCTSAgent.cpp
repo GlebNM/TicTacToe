@@ -11,10 +11,11 @@ Node* MCTSAgent::selectPromisingNode(Node* rootNode) {
 
 void MCTSAgent::expandNode(Node* node) {
     std::vector<State*> possibleStates = node->getState()->getAllPossibleStates();
-    for (auto state: possibleStates) {
+    for (State* state: possibleStates) {
         Node* newNode = new Node(state);
         newNode->setParent(node);
         node->addChild(newNode);
+        delete state;
     }
 }
 
@@ -108,12 +109,14 @@ void MCTSAgent::reRoot(const State& nState) {
     Node::deleteTree(root, nullptr);
     State* state = new State(nState);
     Node* rootNode = new Node(state);
+    delete state;
     root = rootNode;
 }
 
 void MCTSAgent::init(const State& nState) {
     State* state = new State(nState);
     Node* rootNode = new Node(state);
+    delete state;
     root = rootNode;
 }
 
