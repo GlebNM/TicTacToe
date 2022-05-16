@@ -17,21 +17,21 @@ TEST(GameController, HumanHuman) {
 	std::vector <Position> positions = {
 		{4, 4},
 		{3, 5},
-		{0, 6}, 
-		{1, 1}, 
-		{5, 4}, 
+		{0, 6},
+		{1, 1},
+		{5, 4},
 		{7, 4},
 		{3, 4},
-		{2, 3}, 
+		{2, 3},
 		{7, 1},
 		{6, 2},
 		{1, 7},
 		{6, 8},
 		{2, 8},
-		{8, 6}, 
+		{8, 6},
 		{6, 1},
 		{1, 4},
-		{8, 1} 
+		{8, 1}
 	};
 	EXPECT_CALL(game, inputMove(testing::_, testing::_))
      		.Times(testing::AtLeast(17))
@@ -70,4 +70,5 @@ TEST(GameController, EngineHuman) {
 	for (auto str : testing::internal::GetCapturedStdout())
 		ans += str;
 	EXPECT_TRUE(ans.find("OWin") != ans.size());
+    delete bot;
 }
