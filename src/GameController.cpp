@@ -3,11 +3,60 @@
 #include <cctype>
 #include <iostream>
 #include <algorithm>
+#include <fstream>
+#include "json.hpp"
+
+void updateRatings(int id1, int id2, BoardStatus res) {
+    if (id1 == id2)return;
+    using nlohmann::json;
+    std::ifstream in("ratings.json");
+    json j;
+    
+    try {
+        in >> j;
+    } catch (...) {
+        in.close();
+        std::ofstream out("ratings.json");
+        out << "{\"0\":1000,\"1\":1000,\"2\":1000}\n";
+        out.close();
+        in.open("ratings.json");
+        in >> j;
+    }
+    
+    in.close();
+    std::string sid1 = std::to_string(id1);
+    std::string sid2 = std::to_string(id2);
+    double Ra = j[sid1];
+    double Rb = j[sid2];
+    double Ea = 1.0 / (1 + pow(10, (Rb - Ra) / 400));
+    double Eb = 1.0 / (1 + pow(10, (Ra - Rb) / 400));
+
+    const double K = 20;
+    double Sa = 0;
+    double Sb = 0;
+    if (res == BoardStatus::XWin) {
+        Sa = 1;
+    } else if (res == BoardStatus::Draw) {
+        Sa = 0.5;
+        Sb = 0.5;
+    } else {
+        Sb = 1;
+    }
+
+    double RaNew = Ra + K * (Sa - Ea);
+    double RbNew = Rb + K * (Sb - Eb);
+    j[sid1] = RaNew;
+    j[sid2] = RbNew;
+    std::ofstream out("ratings.json");
+    out << j;
+    out.close();
+}
 
 Position GameController::inputMove(const std::vector<Position>& availableMoves,
                                    const std::string& name) {
     Position move{-1, -1};
     std::string input;
+    std::cout << std::endl;
     while (true) {
         std::cout << name << ", введите свой ход" << std::endl;
         std::getline(std::cin, input);
@@ -33,7 +82,7 @@ void GameController::printStatus(BoardStatus status) {
     }
 }
 
-void GameController::PlayGameEngineEngine(Bot* engine1, Bot* engine2,
+void GameController::playGameEngineEngine(Bot* engine1, Bot* engine2,
                                           int timelimit1, int timelimit2) {
     State state;
     engine1->init(state);
@@ -57,9 +106,10 @@ void GameController::PlayGameEngineEngine(Bot* engine1, Bot* engine2,
         printAndUpdate(move);
     }
     printStatus(state.checkOverallStatus());
+    updateRatings(engine1->getId(), engine2->getId(), state.checkOverallStatus());
 }
 
-void GameController::PlayGameEngineHuman(Bot* engine, bool isHumanFirst,
+void GameController::playGameEngineHuman(Bot* engine, bool isHumanFirst,
                                          int timelimit) {
     State state;
     engine->init(state);
@@ -87,7 +137,7 @@ void GameController::PlayGameEngineHuman(Bot* engine, bool isHumanFirst,
     printStatus(state.checkOverallStatus());
 }
 
-void GameController::PlayGameHumanHuman() {
+void GameController::playGameHumanHuman() {
     State state;
     auto makeMove = [this, &state](const std::string& name) {
         Position move = inputMove(state.getAvailableMoves(), name);

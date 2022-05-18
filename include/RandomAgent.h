@@ -3,11 +3,17 @@
 class RandomAgent : public Bot {
 private:
     State state;
-    
+
 public:
+    static const int id = 0;
+
+    int getId() {
+        return id;
+    }
+
     RandomAgent() = default;
 
-    ~RandomAgent() = default;
+    //~RandomAgent() = default;
 
     void init(const State&) final;
 

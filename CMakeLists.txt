@@ -19,6 +19,7 @@ set(SOURCES main.cpp)
 add_executable(main ${SOURCES})
 
 include_directories(include)
+include_directories(nlohmann)
 add_subdirectory(src)
 
 target_link_libraries(main lib)

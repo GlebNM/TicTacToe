@@ -15,10 +15,12 @@ private:
     bool askInfoAboutBot(std::string, int num);
     int chooseFirstPlayer();
     std::string choosePlayerAlgorithm();
-    int choosePlayerTime() ;
+    int choosePlayerTime();
     
 public:
     void welcomeScreen();
     
     bool chooseMode();
+    
+    void game();
 };

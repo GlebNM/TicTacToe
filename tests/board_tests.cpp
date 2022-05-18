@@ -41,6 +41,7 @@ TEST(StateTest, BigCellWin) {
 }
 
 TEST(StateTest, moveGeneration) {
+    testing::internal::CaptureStdout();
     /*
         whole board moves
     */
@@ -52,7 +53,7 @@ TEST(StateTest, moveGeneration) {
         }
     }
     std::vector<Position> res = st.getAvailableMoves();
-    std::sort(res.begin(), res.end(), [](auto& l, auto& r) {
+    std::sort(res.begin(), res.end(), [](const auto& l, const auto& r) {
         if (l.x == r.x) return l.y < r.y;
         else return l.x < r.x;
     });
@@ -69,9 +70,10 @@ TEST(StateTest, moveGeneration) {
             correct.push_back({i, j});
         }
     }
-    std::sort(res.begin(), res.end(), [](auto& l, auto& r) {
+    std::sort(res.begin(), res.end(), [](const auto& l, const auto& r) {
         if (l.x == r.x) return l.y < r.y;
         else return l.x < r.x;
     });
     EXPECT_TRUE(res == correct);
+    std::cout << testing::internal::GetCapturedStdout() << std::endl;
 }

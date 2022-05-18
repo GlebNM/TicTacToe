@@ -16,6 +16,12 @@ private:
     Position findNextMoveWithTimeLimit(int (* evaluation)(const State&, BoardStatus, int depth), int timeLimit);
 
 public:
+    static const int id = 1;
+
+    int getId() {
+        return id;
+    }
+
     MiniMaxAgent() = default;
 
     void init(const State&) final;

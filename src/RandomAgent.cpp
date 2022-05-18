@@ -1,6 +1,8 @@
 #include "RandomAgent.h"
 #include <iostream>
 #include <random>
+#include <cassert>
+#include <algorithm>
 
 void RandomAgent::init(const State& nState) {
     state = nState;
@@ -14,7 +16,9 @@ Position RandomAgent::choseBestMove(int) {
     std::vector<Position> allMoves = state.getAvailableMoves();
     std::random_device rd;
     std::mt19937 g(rd());
-    return allMoves[static_cast<int>(g()) % static_cast<int>(allMoves.size())];
+    assert(!allMoves.empty());
+    std::shuffle(allMoves.begin(), allMoves.end(), g);
+    return allMoves[0];
 }
 
 void RandomAgent::performMove(Position move) {

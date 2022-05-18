@@ -6,14 +6,14 @@
 
 class GameController {
 private:
-    Position inputMove(const std::vector<Position>&, const std::string&);
+    virtual Position inputMove(const std::vector<Position>&, const std::string&);
 
     void printStatus(BoardStatus);
 
 public:
-    void PlayGameEngineEngine(Bot*, Bot*, int, int);
+    void playGameEngineEngine(Bot*, Bot*, int, int);
 
-    void PlayGameEngineHuman(Bot*, bool, int);
+    void playGameEngineHuman(Bot*, bool, int);
 
-    void PlayGameHumanHuman();
+    void playGameHumanHuman();
 };
